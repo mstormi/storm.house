@@ -99,7 +99,11 @@ Read and understand the Amanda docs.
 # Installation
 
 These notes were written for an interactive installation run.
+<<<<<<< HEAD
 Note openHABian provides the new ["auto backup" feature](https://github.com/openhab/openhabian/blob/main/docs/openhabian.md#auto-backup).
+=======
+Note openHABian comes with the new ["auto backup" feature](https://github.com/openhab/openhabian/blob/main/docs/openhabian.md#auto-backup).
+>>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
 It'll essentially mirror your internal SD card to another (bigger) card in an external card reader and uses the remaining space as your Amanda storage area.
 We highly recommend you to make use of this feature on initial openHABian installation, but you can also setup Amanda later on as well.
 
@@ -113,8 +117,13 @@ HEADS UP: You need to provide your storage BEFORE you install Amanda.
 
 That is, you have to mount the USB stick or disk from your NAS to a directory that is LOCAL to your openHABian box.
 Specifically for Windows users: if you are not familiar with the UNIX filesystem concept and what it means 'to mount' storage, read up on it NOW.
+<<<<<<< HEAD
 Various tutorials can be found on the net such as <https://linoxide.com/linux-how-to/how-to-mount-drive-in-linux>.
 The Internet is your friend, but make sure you search for specific terms such as “how to mount a NAS disk on a Raspberry Pi” to match your use case.
+=======
+Various tutorial can be found on the net such as <https://linoxide.com/linux-how-to/how-to-mount-drive-in-linux>.
+The internet is your friend, but make sure you ask search for specific things such as “how to mount a NAS disk on a Raspberry Pi” to match your use case.
+>>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
 So NOW, prepare your storage by creating a directory somewhere and by then mounting the USB device or disk you've previously exported (= shared, i.e. made available for mounting) on that directory.
 This is your mountpoint.
 
@@ -157,7 +166,11 @@ root@pi:/home/pi#
 
 ### USB storage mount example
 
+<<<<<<< HEAD
 Note that this is showing two alternative versions, for VFAT/FAT-16 filesystems (i.e. the original MS-DOS and the improved Windows filesystems that you usually use for small USB sticks only) and another version to use the ext4 native Linux filesystem.
+=======
+Note that this is showing two alternative versions, for FAT16/VFAT filesystems (i.e. the original MS-DOS and the improved Windows filesystems that you usually use for USB sticks) and another version to use the ext4 native Linux filesystem.
+>>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
 You can use ext4 on a stick or USB-attached hard drive.
 Either way, you just need one or the other.
 
@@ -219,7 +232,11 @@ root@pi:/home/pi#
 ## Software installation
 
 First, mount/prepare your storage (see examples).
+<<<<<<< HEAD
 Next, double check that your `backup` user has write access to all of the storage area (preferrably, he **owns** the directory): _Create_ a file there (`touch /path/to/storage/file`), check its ownership (`ls -l /path/to/storage/file`), then delete it
+=======
+Next, double check that your `backup` user has write access to all of the storage area (preferrably, he `owns` the directory): _Create_ a file there (`touch /path/to/storage/file`), check its ownership (`ls -l /path/to/storage/file`), then delete it
+>>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
 (`rm /path/to/storage/file`).
 If that does not work as expected (to produce a file that is owned by the `backup` user), you need to change export options on your NAS/NFS server.
 See also [paragraph on `no_root_squash`](#storage-preparation) above.
