@@ -8,10 +8,18 @@ source: https://github.com/openhab/openhabian/blob/main/docs/openhabian-DEBUG.md
 
 This document is meant to give a guiding hand to users when their openHABian install fails either on initial image installation or later on when running menu options that install or configure optional components.
 
+<<<<<<< HEAD
 ::: tip
 [TLDR](https://www.howtogeek.com/435266/what-does-tldr-mean-and-how-do-you-use-it/)
 Set `debugmode=maximum`in `/etc/openhabian.conf` and see `/boot/first-boot.log` for image installation else record the terminal output.
 :::
+=======
+::: tip [TLDR](https://www.howtogeek.com/435266/what-does-tldr-mean-and-how-do-you-use-it/)
+Set `debugmode=maximum`in `/etc/openhabian.conf` and see `/boot/first-boot.log` for image installation else record the terminal output.
+:::
+
+**Do not ask for help on the forum unless you have _FULLY_ read this guide.**
+>>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
 
 **Please do not ask for help on the forum unless you have read this guide.**
 
@@ -19,14 +27,22 @@ Set `debugmode=maximum`in `/etc/openhabian.conf` and see `/boot/first-boot.log` 
 **Attention:**
 If you do not use the image but use `openhabian-config` manually - either to run `openhabian-config unattended` or interactive use -, **there is no logfile**.
 To record output in this case, you need to configure your terminal client to record and save the command line output.
+<<<<<<< HEAD
 In PuTTy there's a field called 'Lines of scrollback' under the 'Window' option in settings that you should increase to at least some thousand lines else you might not capture everything you need to. Configure any other terminal client likewise.
 :::
 
 Keep in mind that parts of the following information such as for example Wi-Fi and IPv6 setup don't apply to manually installed systems because they happen at or before boot time.
+=======
+In PuTTy there's a field called 'Lines of scrollback' under the 'Window' option in settings that you should increase to at least some thousand lines else you might not capture everything you need to.
+Configure any other terminal client likewise.
+
+Keep in mind that parts of the following information such as for example WiFi and IPv6 setup don't apply to manually installed systems because they happen at or before boot time.
+>>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
 
 ## Prerequisites
 First, please make sure you use the proper host hardware that is supported as per [README](https://github.com/openhab/openhabian/blob/main/README.md).
 
+<<<<<<< HEAD
 openHABian requires a minimum of 1GB of RAM to run well. While you can get away with 512MB when your box has enough CPU power like a RPi0W2, you must not run anything other than openHAB itself, in particular do **not** run memory hogs such as InfluxDB or Grafana.
 
 openHABian requires you to provide direct Internet access for the duration of the installation.
@@ -42,10 +58,26 @@ Lack thereof will not break the installation procedure but can lead to all sorts
 
 A note on fixed IP addressing: openHABian does NOT support setting fixed IP address. That'll interfere with the other methods to configure networking. Don't mess with the Linux config files even if you are proficient in Linux. If you want to have a static IP, instead get the MAC address of your box and configure your DHCP server to map that MAC to the very specific IP you would like to obtain.
 
+=======
+openHABian requires a minimum of 1GB of RAM to run well. While you can get away with a 512MB box like a RPi0W, you must not run anything other than openHAB itself, in particular do **not** run memory hogs such as InfluxDB or Grafana.
+
+openHABian requires you to provide direct Internet access.
+Using private IP addresses is fine as long as your router properly provides NAT (Network Address Translation) services.
+Either Ethernet or WiFi is supported at install time, however, Ethernet tends to be more reliable and WiFi requires user configuration prior to the first boot of openHABian.
+To configure WiFi, simply edit the `wifi_psk=` and `wifi_ssid=` fields in the `boot/openhabian.conf` file on your new SD card.
+
+Your router (or a different device) needs to to provide properly configured DHCP services so your openHABian box gets an IP address assigned when you boot it for the first time.
+The DHCP server also has to announce which DNS resolver to use so your box knows how to translate DNS names into IP addresses.
+It also needs to announce which IP address to use as the default gateway to the internet - a typical access router is also the DHCP server will announce it's own address here.
+Finally, the DHCP server should also announce the NTP server(s) to use for proper time services.
+Lack thereof will not break the installation procedure but can lead to all sorts of long term issues so we recommend to setup DHCP to announce a reachable and working NTP server.
+
+>>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
 A note on IPv6: openHABian was reported failing to boot in some environments that make use of IPv6.
 If basic IP initialization fails (you cannot `ping` your box) or installation gets stuck trying to download software packages, you might want to try disabling IPv6.
 You can also do that before the very first install attempt if you're sure you don't need any IPv6 connectivity on your openHABian box.
 See [this section of openhabian.md](https://github.com/openhab/openhabian/blob/main/docs/openhabian.md#ipv6-notes) how to disable IPv6 on your system.
+<<<<<<< HEAD
 
 Note that this is just a summary to cover the most commonly encountered cases.
 The full boot procedure and how to obtain IP addresses, DNS resolver, default route and NTP server addresses are highly complex and widely customizable and a comprehensive description on how to properly configure your Internet access and router are out of scope of openHABian docs.
@@ -56,6 +88,17 @@ Proceed to installation: Flash-whatever the image to an SD card. Use the Raspi I
 
 NOW, read [openhabian.md](https://github.com/openhab/openhabian/blob/main/docs/openhabian.md#openhabianconf) how to access your SD card and how to modify the openHABian config file on there.
 Some parameters are self-explanatory but some are not so please nonetheless read their full explanation in the linked document.
+=======
+Note that this is just a summary to cover the most commonly encountered cases.
+The full boot procedure and how to obtain IP addresses, DNS resolver, default route and NTP server addresses are highly complex and widely customizable and a comprehensive description on how to properly configure your Internet access and router are out of scope of openHABian.
+Please use an internet search to find more on your own.
+
+## Install
+Proceed to installation: Etch-Burn-d(isk)d(ump)-Flash-whatever the image to an SD card.
+
+NOW, read [openhabian.md](https://github.com/openhab/openhabian/blob/main/docs/openhabian.md#openhabianconf)how to mount your SD card and how to modify the openHABian config file.
+Some parameters are self-explanatory but please nonetheless read the full explanation in the linked document.
+>>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
 Given that you're already reading the debug guide, the most important parameter to set is likely `debugmode=maximum`.
 Once you have passed the first time boot initialization phase and you can login to the system, `/etc/openhabian.conf` will be used from there on.
 You can change it at any time to get output on future boot runs or if you use `openhabian-config` interactively.
@@ -63,9 +106,15 @@ You can change it at any time to get output on future boot runs or if you use `o
 _At this stage, read the first paragraph on the logfile and interactive use again._
 To see debug output during the image installation process, you need to use the procedure from your PC **before** you power your box on.
 
+<<<<<<< HEAD
 If you have a console available (monitor and keyboard), you may attach it to follow the install process **but** be aware that attaching a keyboard may cause the installation to fail.
 Now insert the SD card and turn on your system.
 If you don't have any console, access the web console at `http://<yourhostip>:81/`.
+=======
+If you have a console available (monitor and keyboard), attach it to follow the install process.
+Now insert the SD card and turn on your system.
+If you don't have any console, try to access the web console at `http://<yourhostip>:80/`.
+>>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
 It will display the contents of `/boot/first-log.boot` at intervals of some seconds while installing.
 Mind you that if installation fails, network access may or may not be possible so you might need to access the box via console anyway in order to find out what went wrong.
 
