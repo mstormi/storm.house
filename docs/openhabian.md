@@ -67,6 +67,9 @@ The openHABian image will install openHAB 4 by default, to have it install openH
 Let's put this first: our current recommendation is to get a RPi model 4 or 5 with 2 or 4 GB of RAM, whatever you can get hold of for a good price, plus an "Endurance" SD card. If you want to be on the safe side, order the official 3A power supply, else any old mobile charger will usually do.
 Cards labelled "Endurance" can handle more write cycles and will be more enduring under openHAB\'s use conditions.
 Also prepare to make use of the [SD mirroring feature](openhabian.md#sd-mirroring), get a 2nd SD card right away, same model or at least the size of your internal one, plus a USB card reader.
+Let's put this first: our current recommendation is to get a RPi 4 with 2 or (better) 4 GB of RAM, a 3A power supply and an "Endurance" SD card.
+Cards named "Endurance" can handle more write cycles and will be more enduring under openHAB\'s use conditions.
+Prepare to make use of the [SD mirroring feature](openhabian.md#sd-mirroring), get a 2nd SD card right away, same model or at least the size of your internal one, plus a USB card reader.
 
 ### Hardware support
 As of openHABian version 1.6 and later, all Raspberry Pi models are supported as hardware.
@@ -130,7 +133,6 @@ When you boot a flashed image for the first time, openHABian will setup and use 
 It'll also use the `wifi_ssid` and `wifi_password` parameters from `/boot/openhabian.conf` to determine whether and how to setup the Wi-Fi interface.
 After these stages it checks for connectivity to the Internet and if that fails, it'll open a [Wi-Fi hotspot](#Wi-Fi-Hotspot) that lets you manually connect your system to a WLAN (Wi-Fi) of yours to jumpstart networking.
 Remember that once the hotspot is started, it'll hide once you have successfully used it to connect your Wi-Fi interface but it'll return should your Wi-Fi connectivity break down.
-
 
 ## Raspberry Pi prepackaged SD card image
 
@@ -211,7 +213,6 @@ Edit `/etc/openhabian.conf` to match your needs, then finally use
 ``` bash
 openhabian-config unattended
 ```
-
 to install.
 
 ## openHABian Configuration Tool
@@ -244,11 +245,6 @@ Be sure to read up on the [Configuration](https://www.openhab.org/docs/configura
 
 If you're a newbie to Linux, you sooner or later will have to know some Linux if you want to copy some files or are on the search for a solution to a problem.
 Take some time at this stage to study tutorials and get to know the most basic commands and tools to be able to navigate on your Linux system, edit configurations, check the system state or look at log files.
-
--   "Learn the ways of Linux-fu, for free" interactively with exercises at [linuxjourney.com](https://linuxjourney.com).
--   The official Raspberry Pi help articles over at [raspberrypi.org](https://www.raspberrypi.org/help)
--   "Now what?", Tutorial on the Command line console at [LinuxCommand.org](http://linuxcommand.org/index.php)
-
 ### more openHABian configuration
 
 openHABian is supposed to provide a ready-to-use openHAB base system.
@@ -356,6 +352,7 @@ So a filename would need to be `/boot/xxx.zip`. Default is `/boot/initial.zip`.
 So if you have a openHAB configuration backup zipfile (created e.g. by using menu option 50), put it to the E: device that the first partition of your SD card shows up as on a Windows PC and change its name to 'initial.zip'.
 
 #### Administration user
+
 Raspberry Pi OS images include a Linux user (`pi`) that you can use for openHAB administration.
 openHABian renames the user to what you specify in the `username` parameter and assigns the `userpw` password first, then it proceeds and makes various settings that are either useful (such as some aliases) or required to run openHAB.
 You can also make use of this if you don't use the image but unattended installation on non-RPi hardware, openHABian will then _create_ that user for you if it does not yet exist.
@@ -428,11 +425,13 @@ These you can put as the `preauthkey` into `openhabian.conf` to automatically de
 The `tstags` option allows you to specify tags for use in [Tailscale ACL](https://tailscale.com/kb/1018/acls/) definition.
 
 #### IPv6 notes
+
 You might encounter problems when you make use of IPv6 on some networks and systems. openHABian installation may stop or hang forever.
 In that case _or if you are sure that you do not need IPv6 on your openHABian server_, you can disable IPv6.
 Follow the instructions in the previous section and insert a line into `openhabian.conf` reading `ipv6=disable`.
 
 #### Fake hardware mode
+
 If to install openHABian fails because you have a non-supported hardware or run an unsupported OS release, you can "fake" your hardware and OS to make openHABian behave as if you did own that HW/OS.
 In `openhabian.conf`, uncomment and complete the lines reading `hw=`, `hwarch=` and/or `osrelease=` with the hw and os versions you want to attempt installation with.
 
@@ -502,6 +501,7 @@ After the installation of openHABian was successful, you should be able to acces
 -   Raspberry Pi image setup: [http://openhabian:8080](http://openhabian:8080)
 -   In any case: [http://your-device-hostname:8080](http://your-device-hostname:8080) or [http://192.168.0.2:8080](http://192.168.0.2:8080) (replace name/IP with yours)
 
+#### What's next?
 If you are not able to access your system via the openHAB dashboard or SSH after more than one hour, chances are high that your hardware setup is the problem.
 Consult the [debug guide](openhabian-DEBUG.md) and move on from there.
 
