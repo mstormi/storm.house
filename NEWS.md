@@ -1,10 +1,7 @@
-Hit tab to unselect buttons and scroll through the text using UP/DOWN or
-PGUP/PGDN. All announcements are stored in `/opt/openhabian/docs/CHANGELOG.md`
-for you to lookup.
+## Updates ## 1. März 2025
+Base system aktualisiert auf openHAB 4.3.3, evcc 0.200.4
+Neuer VPN key.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-## openHAB 4.3 ## December 17, 2024
-Base system upgraded to openHAB 4.3. New VPN key.
+## openHAB 4.3 ## 17. Dezember 2024
+Base system aktualisiert auf openHAB 4.3.
 
-Merry Christmas and a healthy New Year!
