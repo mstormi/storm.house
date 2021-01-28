@@ -101,7 +101,6 @@ docker stop openhabian-install
 ```
 
 The ShellCheck linter can be run by using the following commands:
-
 ``` bash
 shellcheck -x -s bash openhabian-setup.sh
 shellcheck -x -s bash functions/*.bash

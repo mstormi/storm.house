@@ -245,7 +245,11 @@ create_mount() {
 srv_bind_mounts() {
   if [[ -f /etc/ztab ]] && [[ $(systemctl is-active zram-config.service) == "active" ]]; then
     echo -n "$(timestamp) [openHABian] Stopping zram service... "
+<<<<<<< HEAD
     if cond_redirect systemctl stop zram-config.service; then echo "OK"; else echo "FAILED"; return 1; fi
+=======
+    if cond_redirect zram-config "stop"; then echo "OK"; else echo "FAILED"; return 1; fi
+>>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
   fi
 
   echo -n "$(timestamp) [openHABian] Preparing openHAB folder mounts under '/srv/openhab-*'... "
@@ -321,6 +325,7 @@ permissions_corrections() {
   if mosquitto_is_installed; then
     if ! cond_redirect fix_permissions /etc/mosquitto/passwd "mosquitto:${username:-openhabian}" 640 750; then echo "FAILED (mosquitto passwd permissions)"; retval=1; fi
     if ! cond_redirect fix_permissions /var/log/mosquitto "mosquitto:${username:-openhabian}" 644 755; then echo "FAILED (mosquitto log permissions)"; retval=1; fi
+<<<<<<< HEAD
   fi
   if zigbee2mqtt_is_installed; then
     if ! cond_redirect fix_permissions /var/log/zigbee2mqtt "${username:-openhabian}:openhab" 644 755; then echo "FAILED (zigbee2mqtt log permissions)"; retval=1; fi
@@ -340,6 +345,23 @@ permissions_corrections() {
     if ! cond_redirect fix_permissions /opt/zram/persistence.bind "openhab:${username:-openhabian}" 664 775; then echo "FAILED (persistence on zram)"; retval=1; fi
   fi
   echo "OK"
+=======
+    if ! cond_redirect fix_permissions /opt/zram/log.bind/mosquitto "mosquitto:${username:-openhabian}" 644 755; then echo "FAILED (mosquitto log permissions on zram)"; retval=1; fi
+  fi
+  if ! cond_redirect setfacl --recursive --remove-all "${openhabFolders[@]}"; then echo "FAILED (reset file access lists)"; retval=1; fi
+  # not sure if still needed. Let's see if removing this causes any user issues
+  #if ! cond_redirect setfacl -R -m g::rwX "${openhabFolders[@]}"; then echo "FAILED (set file access)"; retval=1; fi
+  #if ! cond_redirect setfacl -R -m d:g::rwX "${openhabFolders[@]}"; then echo "FAILED"; retval=1; fi
+
+  if cond_redirect fix_permissions /var/log/unattended-upgrades root:root 644 755; then echo "OK"; else echo "FAILED (unattended upgrades logdir)"; retval=1; fi
+  if cond_redirect fix_permissions /var/log/samba root:root 640 750; then echo "OK"; else echo "FAILED (samba logdir)"; retval=1; fi
+  if cond_redirect fix_permissions /opt/zram/log.bind/samba root:root 640 750; then echo "OK"; else echo "FAILED (samba logdir on zram)"; retval=1; fi
+
+  if cond_redirect fix_permissions /opt/zram/persistence.bind "openhab:${username:-openhabian}" 664 775; then echo "OK"; else echo "FAILED (persistence)"; retval=1; fi
+
+  if cond_redirect fix_permissions /var/log/openhab "openhab:${username:-openhabian}" 664 775; then echo "OK"; else echo "FAILED (openhab log)"; retval=1; fi
+  if cond_redirect fix_permissions /opt/zram/log.bind/openhab "openhab:${username:-openhabian}" 664 775; then echo "OK"; else echo "FAILED (openhab log on zram)"; retval=1; fi
+>>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
 
   if homegear_is_installed; then
     echo -n "$(timestamp) [openHABian] Applying additional file permissions recommendations for Homegear... "
