@@ -4,4 +4,3 @@ for you to lookup.
 
 ## openHAB 4.3 ## December 17, 2024
 Base system upgraded to openHAB 4.3. New VPN key.
-
