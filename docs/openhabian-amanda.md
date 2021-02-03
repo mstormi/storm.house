@@ -68,6 +68,7 @@ Now all that being said, let's turn to what what you're here for: how to accompl
 Best is to read up on and understand some of the basic Amanda concepts over at <http://www.amanda.org>.
 That's not a mandatory step but it will probably help you understand a couple of things better.
 The world of UNIX and backup IS complex and in the end, there's no way to fully hide that from a user.
+
 Here's a couple of those concepts, but this is not a comprehensive list. I cannot understand the system for you,
 that's something you have to accomplish on your own. Read and understand the Amanda docs.
 
@@ -120,7 +121,7 @@ HEADS UP: You need to provide your storage BEFORE you install Amanda.
 
 That is, you have to mount the USB stick or disk from your NAS to a directory that is LOCAL to your openHABian box.
 Specifically for Windows users: if you are not familiar with the UNIX filesystem concept and what it means 'to mount' storage, read up on it NOW.
-Various tutorial can be found on the net such as <https://linoxide.com/linux-how-to/how-to-mount-drive-in-linux>.
+Various tutorials can be found on the net such as <https://linoxide.com/linux-how-to/how-to-mount-drive-in-linux>.
 The internet is your friend, but make sure you ask search for specific things such as “how to mount a NAS disk on a Raspberry Pi” to match your use case.
 So NOW, prepare your storage by creating a directory somewhere and by then mounting the USB device or disk you've previously exported (= shared, i.e. made available for mounting) on that directory.
 This is your mountpoint.
