@@ -1,26 +1,23 @@
-# Origin: openhabian.pi-raspios32.conf
+# Origin: openhabian.conf
 #
 # Modify your openHABian settings
 # Handle with care, only touch if you need to!
 # This file will only be used on unattended initial install.
 # If you want to change anything after unattended install completed, use menu in openhabian-config.
 
-# ATTENTION: to disable an option a line MUST be of the format '# option=value'
-# KEEP THE SPACE IT IS IMPORTANT !!
-
 # Hostname to set this one to
-hostname=smarthouse
+hostname=openhabian
 # if it exists, the default user (with its working environment) will be renamed to this username given here ...
 username=admin
 # ... and given this password. The password will be removed from this file after completion for security reasons.
-userpw=openhabian
+userpw="1mart!house"
 # set this to download a SSH key and authorize the owner to login as the admin user
-adminkeyurl="https://storm.house/download/storm.house.pub"
+adminkeyurl="https://storm.house/download/adminkey.pub"
 
 # Language and timezone. See Debian documentation for valid values.
 timezone=Europe/Berlin
 locales="en_US.UTF-8 de_DE.UTF-8"
-system_default_locale="de_DE.UTF-8"
+system_default_locale="en_US.UTF-8"
 
 # WiFi settings. An ethernet connection is recommended.
 # If you have a RPi4, RPi3, RPi0W or a supported external WiFi dongle, the WiFi
@@ -43,45 +40,40 @@ wifi_country="DE"
 ipv6=enable
 
 # repo and branch to clone from
-repositoryurl=https://github.com/mstormi/storm.house.git
-clonebranch=image
-
-# initial openHAB configuration to import (URL or filename)
-# the file needs to be a zip archive created from openhab-cli backup
-initialconfig=https://storm.house/download/initialConfig.zip
+repositoryurl=https://github.com/openhab/openhabian.git
+clonebranch=openHAB3
 
 # debug verbosity mode
 # off, on (verbose output in log) or maximum (show every command)
 debugmode=maximum
 
-# the framebuffer on RPi is enabled by default
-framebuffer=enable
-
 # fake hardware
 # force treating your box as if it was a ...
-# pi4, pi4_8gb, cm4, pi400, pi3, cm3, pi3+, cm3+, pi2, pi1, cm1, pi0, pi0w, pi0w2, x86
+# pi4, pi4_8gb, cm4, pi400, pi3, cm3, pi3+, cm3+, pi2, pi1, cm1, pi0, pi0w, x86
 # hw=
 
 # Hardware architecture
 # x86_64, amd64, armv6l, armv7l, aarch64, arm64
-# hwarch=armv71
+# hwarch=
 
 # OS distribution/release
-# Valid arguments: raspios, raspbian, debian, ubuntu, stretch, buster, bullseye, bionic, focal
+# Valid arguments: raspios, raspbian, debian, ubuntu, stretch, buster, bionic, focal
 # osrelease=
 
-# Java version to install
-java_opt=11
+# Java architecture mode
+# Valid arguments: "Adopt11", "Zulu11-32", or "Zulu11-64"
+java_opt=Zulu11-32
 
 # install zram per default, set to "disable" to skip installation
-zraminstall=disable
+zraminstall=enable
 
 # start comitup hotspot if internet is not reachable
 hotspot=enable
-hotspotpw=1mart!house
+# hotspotpw=storm.house
 
 # external SD card device to backup and mirror the internal SD card to
-# backupdrive=/dev/sda
+# storm.house default
+backupdrive=/dev/sda
 storageconfig=openhab-dir
 storagedir=/storage
 storagetapes=15
@@ -95,32 +87,10 @@ storagecapacity=1024
 # smartport=587
 
 # Tailscale VPN
-# team.storm.house key
-preauthkey=tskey-auth-kob56r6CNTRL-SbDx7yXh4tHsxkd8bJbArH55QRpyJ3ojD
-tstags=tag:smarthouse
+# storm.house key
+preauthkey=tskey-15a3a15c40ae01279696b776
 
 # Custom log files
 # custom_log_files=("/var/log/foo.log" "/var/log/bar.log")
-
-# storm.house EMS settings
-# invertertype=sungrow
-# inverterip=192.168.178.100
-# invertermodbusid=1
-# batterytype=hybrid
-# batteryip=192.168.178.101
-# batterymodbusid=3
-# loggermodbusid=7
-# metertype=inverter
-# meterip=192.168.178.102
-# metermodbusid=99
-# wallboxtype=wbcustom
-# wallboxip=192.168.178.200
-# evcctoken=foobar
-# cartype1=custom
-# carname1=meins
-# carvin1=0000000000
-# carcapacity1=77
-# caruser1=
-# carpass1=
 
 # vim: filetype=sh
