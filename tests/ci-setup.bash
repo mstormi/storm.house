@@ -15,8 +15,10 @@ echo_process() {
 }
 
 if [[ $1 == "github" ]]; then
-  repoURL="$(git remote get-url origin)"
-  repoBranch="$(git rev-parse --abbrev-ref HEAD)"
+  #repoURL="$(git remote get-url origin)"
+  #repoBranch="$(git rev-parse --abbrev-ref HEAD)"
+  repoURL="https://github.com/openhab/openhabian.git"
+  repoBranch="main"
   sed -i 's#debugmode=.*$#debugmode=on#' build-image/openhabian.conf
 
   if ! [[ $repoURL == "https"* ]]; then
