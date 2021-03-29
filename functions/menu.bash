@@ -1,22 +1,18 @@
 #!/usr/bin/env bash
 
 show_about() {
-  if openhab2_is_installed; then OHPKG="openhab2"; else OHPKG="openhab"; fi
-  whiptail --title "About openHABian and $(basename "$0")" --msgbox "openHABian Configuration Tool — $(get_git_revision)
+  whiptail --title "About storm.house and smart-house-config" --msgbox "storm.house Configuration Tool $(get_git_revision)
 openHAB $(sed -n 's/openhab-distro\s*: //p' /var/lib/${OHPKG}/etc/version.properties) - $(sed -n 's/build-no\s*: //p' /var/lib/${OHPKG}/etc/version.properties)
-\\nThis tool provides a little help to make your openHAB experience as comfortable as possible.
-Make sure you have read the README and know about the Debug and Backup guides in /opt/openhabian/docs.
-\\nMenu 01 will allow you to select the standard (\"openHAB\") or the very latest (\"main\") openHABian version.
+This tool provides a little help to make your openHAB experience as comfortable as possible.
+\\nMake sure you have read the README and know about the Debug and Backup guides in /opt/openhabian/docs.
+Menu 40 to select the standard release, milestone or very latest development version of openHAB and
 Menu 02 will upgrade all of your OS and applications to the latest versions, including openHAB.
-Menu 03 will install or upgrade openHAB to the latest version available.
-Menu 10 provides a number of system tweaks. These are already active after a standard installation.
-Menu 20 allows you to install some supported optional components often used with openHAB.
-Menu 30 allows you to change system configuration options to match your hardware.
-Menu 40 allows you to select the standard release, milestone or very latest development version of openHAB.
+Menu 10 provides a number of system tweaks. These are already active after a standard installation while
+Menu 30 allows for changing system configuration to match your hardware.
+Note that the raspi-config tool was intentionally removed to not interfere with smart-house-config.
 Menu 50 provides options to backup and restore either your openHAB configuration or the whole system.
 \\nVisit these sites for more information:
   - Documentation: https://www.openhab.org/docs/installation/openhabian.html
-  - Development: https://github.com/openhab/openhabian
   - Discussion: https://community.openhab.org/t/13379" 25 116
   RET=$?
   if [ $RET -eq 255 ]; then
@@ -29,15 +25,13 @@ show_main_menu() {
   local choice
   local version
 
-  choice=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "Setup Options" 24 118 16 --cancel-button Exit --ok-button Execute \
-  "00 | About openHABian"        "Information about the openHABian project and this tool" \
+  choice=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Setup Options" 18 116 11 --cancel-button Exit --ok-button Execute \
+  "00 | About smart-house"       "Information about this tool" \
   "" "" \
-  "01 | Select Branch"           "Select the openHABian config tool version (\"branch\") to run" \
-  "02 | Upgrade System"          "Update all installed software packages (incl. openHAB) to their latest version" \
-  "03 | Install openHAB"         "Install or upgrade to latest openHAB" \
-  "04 | Import config"           "Import an openHAB configuration from file or URL" \
+  "02 | Upgrade System"          "Upgrade all installed software packages (incl. openHAB) to their latest version" \
+  "03 | Install openHAB"         "Install or upgrade to latest openHAB release" \
   "" "" \
-  "10 | Apply Improvements"      "Apply the latest improvements to the basic openHABian setup ►" \
+  "10 | Apply Improvements"      "Apply the latest improvements to the basic setup ►" \
   "20 | Optional Components"     "Choose from a set of optional software components ►" \
   "30 | System Settings"         "A range of system and hardware related configuration steps ►" \
   "40 | openHAB Related"         "Switch the installed openHAB version or apply tweaks ►" \
@@ -70,9 +64,9 @@ show_main_menu() {
     import_openhab_config
 
   elif [[ "$choice" == "10"* ]]; then
-    choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "Apply Improvements" 24 118 16 --cancel-button Back --ok-button Execute \
+    choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Apply Improvements" 13 116 6 --cancel-button Back --ok-button Execute \
     "11 | Packages"               "Install needed and recommended system packages" \
-    "12 | Bash&Vim Settings"      "Update customized openHABian settings for bash, vim and nano" \
+    "12 | Bash&Vim Settings"      "Update customized settings for bash, vim and nano" \
     "13 | System Tweaks"          "Add /srv mounts and update settings typical for openHAB" \
     "14 | Fix Permissions"        "Update file permissions of commonly used files and folders" \
     "15 | FireMotD"               "Upgrade the program behind the system overview on SSH login" \
@@ -92,7 +86,7 @@ show_main_menu() {
     esac
 
   elif [[ "$choice" == "20"* ]]; then
-    choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "Optional Components" 24 118 16 --cancel-button Back --ok-button Execute \
+    choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Optional Components" 25 118 18 --cancel-button Back --ok-button Execute \
     "21 | Log Viewer"             "openHAB Log Viewer webapp (frontail)" \
     "   | Add log to viewer"      "Add a custom log to openHAB Log Viewer (frontail)" \
     "   | Remove log from viewer" "Remove a custom log from openHAB Log Viewer (frontail)" \
@@ -142,7 +136,7 @@ show_main_menu() {
     esac
 
   elif [[ "$choice" == "30"* ]]; then
-    choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "System Settings" 24 118 16 --cancel-button Back --ok-button Execute \
+    choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "System Settings" 24 118 17 --cancel-button Back --ok-button Execute \
     "31 | Change hostname"        "Change the name of this system, currently '$(hostname)'" \
     "32 | Set system locale"      "Change system language, currently '$(env | grep "^[[:space:]]*LANG=" | sed 's|LANG=||g')'" \
     "33 | Set system timezone"    "Change your timezone, execute if it's not '$(printf "%(%H:%M)T\\n" "-1")' now" \
@@ -159,7 +153,7 @@ show_main_menu() {
     "3A | Setup Exim Mail Relay"  "Install Exim4 to relay mails via public email provider" \
     "3B | Setup Tailscale VPN"    "Establish or join a WireGuard based VPN using the Tailscale service" \
     "   | Remove Tailscale VPN"   "Remove the Tailscale VPN service" \
-    "   | Install WireGuard"      "Setup WireGuard to enable secure remote access to this openHABian system" \
+    "   | Install WireGuard"      "Setup WireGuard to enable secure remote access to this system" \
     "   | Remove WireGuard"       "Remove WireGuard VPN from this system" \
     "3C | Setup UPS (nut)"        "Setup a Uninterruptable Power Supply for this system using Network UPS Tools" \
     3>&1 1>&2 2>&3)
