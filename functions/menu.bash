@@ -1,21 +1,18 @@
 #!/usr/bin/env bash
 
 show_about() {
-  whiptail --title "About openHABian and openhabian-config" --msgbox "openHABian Configuration Tool — $(get_git_revision)
+  whiptail --title "About storm.house and smart-house-config" --msgbox "storm.house Configuration Tool $(get_git_revision)
 This tool provides a little help to make your openHAB experience as comfortable as possible.
 \\nMake sure you have read the README and know about the Debug and Backup guides in /opt/openhabian/docs.
-\\nMenu 01 to select the standard (\"openHAB3\") or the very latest (\"main\") openHABian version.
 Menu 40 to select the standard release, milestone or very latest development version of openHAB and
-Menu 03 to install or upgrade it.
 Menu 02 will upgrade all of your OS and applications to the latest versions, including openHAB.
 Menu 10 provides a number of system tweaks. These are already active after a standard installation while
 Menu 30 allows for changing system configuration to match your hardware.
-Note that the raspi-config tool was intentionally removed to not interfere with openhabian-config.
+Note that the raspi-config tool was intentionally removed to not interfere with smart-house-config.
 Menu 50 provides options to backup and restore either your openHAB configuration or the whole system.
 Note backups are NOT active per default so remember to set them up right at the beginning of your journey.
 \\nVisit these sites for more information:
   - Documentation: https://www.openhab.org/docs/installation/openhabian.html
-  - Development: https://github.com/openhab/openhabian
   - Discussion: https://community.openhab.org/t/13379" 25 116
   RET=$?
   if [ $RET -eq 255 ]; then
@@ -28,14 +25,13 @@ show_main_menu() {
   local choice
   local version
 
-  choice=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "Setup Options" 18 116 11 --cancel-button Exit --ok-button Execute \
-  "00 | About openHABian"        "Information about the openHABian project and this tool" \
+  choice=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Setup Options" 18 116 11 --cancel-button Exit --ok-button Execute \
+  "00 | About smart-house"        "Information about this tool" \
   "" "" \
-  "01 | Select Branch"           "Select the openHABian config tool version (\"branch\") to run" \
   "02 | Upgrade System"          "Upgrade all installed software packages (incl. openHAB) to their latest version" \
   "03 | Install openHAB"         "Install or upgrade to openHAB release 3" \
   "" "" \
-  "10 | Apply Improvements"      "Apply the latest improvements to the basic openHABian setup ►" \
+  "10 | Apply Improvements"      "Apply the latest improvements to the basic setup ►" \
   "20 | Optional Components"     "Choose from a set of optional software components ►" \
   "30 | System Settings"         "A range of system and hardware related configuration steps ►" \
   "40 | openHAB Related"         "Switch the installed openHAB version or apply tweaks ►" \
@@ -65,9 +61,9 @@ show_main_menu() {
     openhab_setup openHAB3 "stable"
 
   elif [[ "$choice" == "10"* ]]; then
-    choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "Apply Improvements" 13 116 6 --cancel-button Back --ok-button Execute \
+    choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Apply Improvements" 13 116 6 --cancel-button Back --ok-button Execute \
     "11 | Packages"               "Install needed and recommended system packages" \
-    "12 | Bash&Vim Settings"      "Update customized openHABian settings for bash, vim and nano" \
+    "12 | Bash&Vim Settings"      "Update customized settings for bash, vim and nano" \
     "13 | System Tweaks"          "Add /srv mounts and update settings typical for openHAB" \
     "14 | Fix Permissions"        "Update file permissions of commonly used files and folders" \
     "15 | FireMotD"               "Upgrade the program behind the system overview on SSH login" \
@@ -87,7 +83,7 @@ show_main_menu() {
     esac
 
   elif [[ "$choice" == "20"* ]]; then
-    choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "Optional Components" 22 118 15 --cancel-button Back --ok-button Execute \
+    choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Optional Components" 23 118 16 --cancel-button Back --ok-button Execute \
     "21 | Log Viewer"             "openHAB Log Viewer webapp (frontail)" \
     "   | Add log to viewer"      "Add a custom log to openHAB Log Viewer (frontail)" \
     "   | Remove log from viewer" "Remove a custom log from openHAB Log Viewer (frontail)" \
@@ -127,7 +123,7 @@ show_main_menu() {
     esac
 
   elif [[ "$choice" == "30"* ]]; then
-    choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "System Settings" 24 118 17 --cancel-button Back --ok-button Execute \
+    choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "System Settings" 24 118 17 --cancel-button Back --ok-button Execute \
     "31 | Change hostname"        "Change the name of this system, currently '$(hostname)'" \
     "32 | Set system locale"      "Change system language, currently '$(env | grep "^[[:space:]]*LANG=" | sed 's|LANG=||g')'" \
     "33 | Set system timezone"    "Change the your timezone, execute if it's not '$(date +%H:%M)' now" \
@@ -143,7 +139,7 @@ show_main_menu() {
     "39 | Setup Exim Mail Relay"  "Install Exim4 to relay mails via public email provider" \
     "3A | Setup Tailscale VPN"    "Establish or join a WireGuard based VPN using the Tailscale service" \
     "   | Remove Tailscale VPN"   "Remove the Tailscale VPN service" \
-    "   | Install WireGuard"      "Setup WireGuard to enable secure remote access to this openHABian system" \
+    "   | Install WireGuard"      "Setup WireGuard to enable secure remote access to this system" \
     "   | Remove WireGuard"       "Remove WireGuard VPN from this system" \
     3>&1 1>&2 2>&3)
     if [ $? -eq 1 ] || [ $? -eq 255 ]; then return 0; fi
@@ -171,7 +167,7 @@ show_main_menu() {
     esac
 
   elif [[ "$choice" == "40"* ]]; then
-    choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "openHAB Related" 17 116 10 --cancel-button Back --ok-button Execute \
+    choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "openHAB Related" 17 116 10 --cancel-button Back --ok-button Execute \
     "41 | openHAB Stable"         "Install or switch to the latest openHAB Stable Release" \
     "   | openHAB Milestone"      "Install or switch to the latest openHAB Milestone Build" \
     "   | openHAB Snapshot"       "Install or switch to the latest openHAB Snapshot Build" \
@@ -203,10 +199,10 @@ show_main_menu() {
     esac
 
   elif [[ "$choice" == "50"* ]]; then
-    choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "Backup/Restore" 14 116 7 --cancel-button Back --ok-button Execute \
+    choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Backup/Restore" 14 116 7 --cancel-button Back --ok-button Execute \
     "50 | Backup openHAB config"      "Backup the current active openHAB configuration" \
     "51 | Restore an openHAB config"  "Restore a previous openHAB configuration from backup" \
-    "52 | Amanda System Backup"       "Set up Amanda to comprehensively backup your complete openHABian box" \
+    "52 | Amanda System Backup"       "Set up Amanda to comprehensively backup your complete box" \
     "53 | Setup SD mirroring"         "Setup mirroring of internal to external SD card" \
     "   | Remove SD mirroring"        "Disable mirroring of SD cards" \
     "54 | Raw copy SD"                "Raw copy internal SD to external disk / SD card" \
