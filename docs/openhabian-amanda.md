@@ -93,11 +93,11 @@ data that Amanda will store into each tape subdirectory as (storage size) divide
 The ability to backup to a directory was added later, but the 'slot', 'drive' and 'tape' concepts were kept. That's why here,
 as a deployment inside openHABian, we will have 'virtual' tapes and slots which are implemented as subdirectories (one for each
 'tape') and filesystem links (two by default config, drive0 and drive1) to point to a virtual tape.
-If you have the drive1 link point to the slot3 directory, it effectively means that tape 3 is currently inserted in drive 1).
+If you have the drive1 link point to the slot3 directory, it effectively means that tape 3 is currently inserted in drive 1.
 *   Amanda was built on top of UNIX and makes use of its user and rights system, so it is very useful and you are requested to
 familiarize yourself with that. As a general good UNIX practice, you shouldn’t use functional users such as “backup” (the OS
 uses functional users to execute tasks with specific access rights) for administration tasks. Use your personal user instead
-(that you have created that at the beginning of your openHABian installation or "openhabian" by default).
+(you have created that at the beginning of your openHABian installation or "openhabian" by default).
 Installation tasks including post-package-installation changes (edits) of the Amanda config files, require to use the `root`
 user. Any ordinary user (such as your personal one) can execute commands on behalf of root (and with root permission) by
 prepending "sudo " to the command. As yourself, prepend "sudo -u backup" to execute the following command as the "backup" user.
