@@ -3,6 +3,7 @@ PGUP/PGDN. All announcements are stored in `/opt/openhabian/docs/CHANGELOG.md`
 for you to lookup.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## openHAB 4.3 ## December 17, 2024
 Base system upgraded to openHAB 4.3. New VPN key.
 
