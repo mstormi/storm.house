@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
-<<<<<<< HEAD
 # shellcheck disable=SC2154
-
-=======
->>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
 ## Generate systemd dependencies for zram, Frontail and others to start together with OH
 ## This is done using /etc/systemd/system/openhab.service.d/override.conf
 ##
