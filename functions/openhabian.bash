@@ -311,11 +311,7 @@ migrate_installation() {
 
   javaVersion="$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | sed -e 's/_.*//g; s/^1\.//g; s/\..*//g; s/-.*//g;')"
   # shellcheck disable=SC2154
-<<<<<<< HEAD
   [[ "$zraminstall" != "disable" ]] && zram_is_installed && if cond_redirect systemctl stop zram-config.service; then echo "OK"; else echo "FAILED (stop zram)"; return 1; fi
-=======
-  [[ "$zraminstall" != "disable" ]] && [[ -s /etc/ztab ]] && if cond_redirect zram-config "stop"; then echo "OK"; else echo "FAILED (stop zram)"; return 1; fi
->>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
   backup_openhab_config
 
   if [[ -z "$javaVersion" ]] || [[ "${javaVersion}" -lt "11" ]]; then
@@ -367,11 +363,7 @@ migrate_installation() {
   sed -i "s|${from}/|${to}/|g" $homegearService
   echo "OK"
 
-<<<<<<< HEAD
   if zram_is_installed; then
-=======
-  if [[ -s /etc/ztab ]]; then
->>>>>>> febbbeb5d (Update all documentation for clarity and accuracy (#1443))
     echo -n "$(timestamp) [openHABian] Migrating zram config... "
     sed -i "s|/${from}|/${to}|g" "$ztab"
     sed -i "s|${from}|${to}|g" "$zramService"
