@@ -122,7 +122,7 @@ timezone_setting() {
 ##
 ##    setup_ntp(String option)
 ##
- 
+
 ## Function for setting the locale of the current system.
 ##
 ##   The locale setting will default to the users choice on an INTERACTIVE setup,
@@ -206,9 +206,13 @@ bashrc_copy() {
   if ! cp "${BASEDIR:-/opt/openhabian}"/includes/generic/bash.bashrc /etc/bash.bashrc; then echo "FAILED (user bashrc)"; return 1; fi
   if ! cp "${BASEDIR:-/opt/openhabian}"/includes/generic/bashrc-root /root/.bashrc; then echo "FAILED (root bashrc)"; return 1; fi
   if ! cp "${BASEDIR:-/opt/openhabian}"/includes/generic/bash_profile /home/"${username:-openhabian}"/.bash_profile; then echo "FAILED (user bash_profile)"; return 1; fi
+<<<<<<< HEAD
   if ! cp "${BASEDIR:-/opt/openhabian}"/includes/generic/bash_aliases /home/"${username:-openhabian}"/.bash_aliases; then echo "FAILED (user bash_aliases)"; return 1; fi
   if chown "${username:-openhabian}:${username:-openhabian}" /home/"${username:-openhabian}"/.bash_*; then echo "OK"; else echo "FAILED (permissions)"; return 1; fi
   if ! cp "${BASEDIR:-/opt/openhabian}"/includes/generic/bash_aliases /root/.bash_aliases; then echo "FAILED (root bash_aliases)"; return 1; fi
+=======
+  if chown "${username:-openhabian}:${username:-openhabian}" /home/"${username:-openhabian}"/.bash_profile; then echo "OK"; else echo "FAILED (permissions)"; return 1; fi
+>>>>>>> e2424568c (Clean up and organize repository files)
 }
 
 ## Function for adding a tuned vim configuration file to the current system.
