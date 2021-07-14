@@ -2,7 +2,7 @@
 
 show_about() {
   whiptail --title "About storm.house and smart-house-config" --msgbox "storm.house Configuration Tool $(get_git_revision)
-openHAB $(sed -n 's/openhab-distro\s*: //p' /var/lib/${OHPKG}/etc/version.properties) - $(sed -n 's/build-no\s*: //p' /var/lib/${OHPKG}/etc/version.properties)
+openHAB $(sed -n 's/openhab-distro\s*: //p' "/var/lib/${OHPKG}/etc/version.properties") - $(sed -n 's/build-no\s*: //p' "/var/lib/${OHPKG}/etc/version.properties")
 This tool provides a little help to make your openHAB experience as comfortable as possible.
 \\nMake sure you have read the README and know about the Debug and Backup guides in /opt/openhabian/docs.
 Menu 40 to select the standard release, milestone or very latest development version of openHAB and
