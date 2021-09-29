@@ -31,7 +31,7 @@ show_main_menu() {
   "" "" \
   "02 | Upgrade System"          "Upgrade all installed software packages (incl. openHAB) to their latest version" \
   "03 | Install openHAB"         "Install or upgrade to openHAB release 3" \
-  "04 | Setup storm.house"       "Setup storm.house Energy Management System" \
+  "05 | Setup storm.house"       "Setup storm.house Energy Management System" \
   "" "" \
   "10 | Apply Improvements"      "Apply the latest improvements to the basic setup ►" \
   "20 | Optional Components"     "Choose from a set of optional software components ►" \
@@ -65,7 +65,7 @@ show_main_menu() {
   elif [[ "$choice" == "04"* ]]; then
     import_openhab_config
 
-  elif [[ "$choice" == "04"* ]]; then
+  elif [[ "$choice" == "05"* ]]; then
     #choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Select EMS configuration" 8 116 2 --cancel-button Back --ok-button Execute \
     choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu " " 9 116 2 --cancel-button Back --ok-button Execute \
     "01 | Kostal Inverter"        "Setup EMS to use a Kostal inverter" \
