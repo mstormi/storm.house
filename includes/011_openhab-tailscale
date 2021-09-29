@@ -1,1 +1,1 @@
-openhab ALL=(ALL) NOPASSWD: /usr/bin/tailscale
+admin ALL=(ALL) NOPASSWD: /usr/bin/tailscale
