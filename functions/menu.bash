@@ -31,6 +31,7 @@ show_main_menu() {
   "" "" \
   "02 | Upgrade System"          "Upgrade all installed software packages (incl. openHAB) to their latest version" \
   "03 | Install openHAB"         "Install or upgrade to openHAB release 3" \
+  "04 | Import config"           "Import an openHAB 3 configuration from file or URL" \
   "05 | Setup storm.house"       "Setup storm.house Energy Management System" \
   "" "" \
   "10 | Apply Improvements"      "Apply the latest improvements to the basic setup ►" \
