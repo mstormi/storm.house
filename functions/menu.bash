@@ -31,6 +31,7 @@ show_main_menu() {
   "" "" \
   "02 | Upgrade System"          "Upgrade all installed software packages (incl. openHAB) to their latest version" \
   "03 | Install openHAB"         "Install or upgrade to openHAB release 3" \
+  "04 | Import config"           "Import an openHAB 3 configuration from file or URL" \
   "05 | Setup storm.house"       "Setup storm.house Energy Management System" \
   "" "" \
   "10 | Apply Improvements"      "Apply the latest improvements to the basic setup ►" \
@@ -61,6 +62,9 @@ show_main_menu() {
   elif [[ "$choice" == "03"* ]]; then
     wait_for_apt_to_finish_update
     migrate_installation "openHAB3"
+  
+  elif [[ "$choice" == "04"* ]]; then
+    import_openhab_config
 
   elif [[ "$choice" == "05"* ]]; then
     #choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Select EMS configuration" 8 116 2 --cancel-button Back --ok-button Execute \
@@ -234,7 +238,7 @@ show_main_menu() {
     case "$choice2" in
       50\ *) backup_openhab_config ;;
       51\ *) restore_openhab_config ;;
-      *Restore\ text\ only*) restore_openhab_config "textonly" ;;
+      *Restore\ text\ only*) restore_openhab_config "${initialconfig:-/boot/initial.zip}" "textonly" ;;
       52\ *) wait_for_apt_to_finish_update && amanda_setup ;;
       53\ *) setup_mirror_SD "install" ;;
       *Remove\ SD\ mirroring*) setup_mirror_SD "remove" ;;
