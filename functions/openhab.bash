@@ -52,6 +52,7 @@ openhab_setup() {
   local repo
   local successText
 
+
   if [[ "$1" == "openHAB2" ]] || [[ "$1" == "stable" ]]; then
      ohPkgName="openhab2"
   else
