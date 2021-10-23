@@ -126,7 +126,7 @@ if [[ -n "$UNATTENDED" ]]; then
   exim_setup
   permissions_corrections
   setup_mirror_SD "install"
-  setup_inverter_config "${invertertype:-kostal}" "${inverterip:-192.168.178.100}"
+  setup_pv_config "${invertertype:-kostal}" "${inverterip:-192.168.178.100}"
   install_cleanup
 else
   apt_update
