@@ -65,9 +65,6 @@ jobs:
            cp build-image/template_rpi-imager-openhab.json rpi-imager-openhab.json
            sudo -E ./build.bash rpi
            sudo -E ./build.bash rpi64
-           #echo "::set-output name=image32::$(ls openhabian-pi-raspios32*.img.xz)"
-           #echo "::set-output name=image64::$(ls openhabian-pi-raspios64*.img.xz)"
-           #echo "::set-output name=json_image::$(ls rpi-imager-openhab.json)"
            echo "image32=$(ls openhabian-pi-raspios32*.img.xz)" >> $GITHUB_OUTPUT
            echo "image64=$(ls openhabian-pi-raspios64*.img.xz)" >> $GITHUB_OUTPUT
            echo "json_image=$(ls rpi-imager-openhab.json)" >> $GITHUB_OUTPUT
