@@ -47,6 +47,7 @@ jobs:
        - name: Build openHABian images
          id: build
          run: |
+           sudo -E ./tests/ci-setup.bash github ${{ github.ref_name }}
            sed -i -e "s|^userpw=.*$|userpw=\"${{secrets.USERPW}}\"|g" build-image/openhabian.pi-raspios32.conf
            sed -i -e "s|ap_password:.*$|ap_password: ${{secrets.HOTSPOTPW}}|g" includes/comitup.conf
            cp build-image/template_rpi-imager-openhab.json rpi-imager-openhab.json
