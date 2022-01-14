@@ -68,6 +68,7 @@ show_main_menu() {
 
   elif [[ "$choice" == "05"* ]]; then
     setup_pv_config
+    setup_wb_config
 
   elif [[ "$choice" == "10"* ]]; then
 <<<<<<< HEAD
