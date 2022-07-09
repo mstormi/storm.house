@@ -229,9 +229,9 @@ show_main_menu() {
     version="$(openhab3_is_installed && echo "openHAB3" || echo "openHAB2")"
     # shellcheck disable=SC2154
     case "$choice2" in
-      41\ *) openhab_setup "$version" "stable";;
-      *openHAB\ Milestone) openhab_setup "$version" "testing";;
-      *openHAB\ Snapshot) openhab_setup "$version" "unstable";;
+      41\ *) openhab_setup "$version" "stable"; replace_logo;;
+      *openHAB\ Milestone) openhab_setup "$version" "testing"; replace_logo;;
+      *openHAB\ Snapshot) openhab_setup "$version" "unstable"; replace_logo;;
       42\ *) migrate_installation "openHAB3" && openhabian_update "openHAB3";;
       *Downgrade\ to\ openHAB\ 2) migrate_installation "openHAB2" && openhabian_update "stable";;
       43\ *) openhab_shell_interfaces;;
