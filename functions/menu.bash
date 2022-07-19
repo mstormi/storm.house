@@ -57,6 +57,7 @@ show_main_menu() {
   elif [[ "$choice" == "02"* ]]; then
     wait_for_apt_to_finish_update
     system_upgrade
+    update_ems
     replace_logo
 
   elif [[ "$choice" == "03"* ]]; then
@@ -69,6 +70,9 @@ show_main_menu() {
   elif [[ "$choice" == "05"* ]]; then
     setup_pv_config
     setup_wb_config
+
+  elif [[ "$choice" == "06"* ]]; then
+    update_ems
 
   elif [[ "$choice" == "10"* ]]; then
     choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Apply Improvements" 13 116 6 --cancel-button Back --ok-button Execute \
