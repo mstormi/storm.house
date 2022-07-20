@@ -71,9 +71,6 @@ show_main_menu() {
     setup_pv_config
     setup_wb_config
 
-  elif [[ "$choice" == "06"* ]]; then
-    update_ems
-
   elif [[ "$choice" == "10"* ]]; then
 <<<<<<< HEAD
     choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "Apply Improvements" 24 118 16 --cancel-button Back --ok-button Execute \
