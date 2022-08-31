@@ -111,6 +111,7 @@ if [[ -n "$UNATTENDED" ]]; then
   firemotd_setup
   java_install "${java_opt:-11}"
   openhab_setup "${clonebranch:-openHAB3}" "stable"
+  install_openhab_extras
   replace_logo
   import_openhab_config
   openhab_shell_interfaces
