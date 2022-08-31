@@ -2,14 +2,14 @@
 
 show_about() {
   if openhab3_is_installed; then OHPKG="openhab"; else OHPKG="openhab2"; fi
-  whiptail --title "About storm.house and smart-house-config" --msgbox "storm.house Configuration Tool $(get_git_revision)
+  whiptail --title "About storm.house and this tool" --msgbox "storm.house Configuration Tool $(get_git_revision)
 openHAB $(sed -n 's/openhab-distro\s*: //p' "/var/lib/${OHPKG}/etc/version.properties") - $(sed -n 's/build-no\s*: //p' "/var/lib/${OHPKG}/etc/version.properties")
 \\nThis Energy Management System is based on openHAB 3.2.0 (Release) and supports EVCC v0.94 or older.\\n
 Menu 40 to select the standard release, milestone or very latest development version of openHAB and
 Menu 02 will upgrade all of your OS and applications to the latest versions, including openHAB.
 Menu 10 provides a number of system tweaks. These are already active after a standard installation while
 Menu 30 allows for changing system configuration to match your hardware.
-Note that the raspi-config tool was intentionally removed to not interfere with smart-house-config.
+Note that the raspi-config tool was intentionally removed to not interfere with this config tool.
 Menu 50 provides options to backup and restore either your openHAB configuration or the whole system.
 \\nVisit these sites for more information:
   - Documentation: https://www.openhab.org/docs/installation/openhabian.html
