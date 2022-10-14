@@ -290,6 +290,7 @@ permissions_corrections() {
   local openhabFolders=("/etc/openhab" "/var/lib/openhab" "/var/log/openhab" "/usr/share/openhab")
   local openhabHome="/var/lib/openhab"
   local backupsFolder="${OPENHAB_BACKUPS:-/var/lib/openhab/backups}"
+  local privkey=/var/lib/openhab/etc/openhab_rsa
   local retval=0
 
   echo -n "$(timestamp) [openHABian] Applying file permissions recommendations... "
@@ -379,6 +380,10 @@ permissions_corrections() {
   if [[ -d /opt/habapp ]]; then
     echo -n "$(timestamp) [openHABian] Applying additional file permissions recommendations for HABApp... "
     if cond_redirect fix_permissions "/opt/habapp" 775 775; then echo "OK"; else echo "FAILED (HABApp venv permissions)"; retval=1; fi
+  fi
+
+  if [[ -f "${privkey}" ]]; then
+    chmod 600 "${privkey}"
   fi
 
   return $retval
