@@ -384,6 +384,7 @@ permissions_corrections() {
   if [[ -f "${privkey}" ]]; then
     chmod 600 "${privkey}"
   fi
+
   return $retval
 }
 
