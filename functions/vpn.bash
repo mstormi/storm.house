@@ -228,7 +228,7 @@ install_tailscale() {
 
 ## add node to private tailscale network
 ##
-##   setup_tailscale(String action)
+##   setup_tailscale(String action, String tags)
 ##
 setup_tailscale() {
   local preAuthKey="${1:-${preauthkey}}"
