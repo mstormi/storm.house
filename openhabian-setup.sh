@@ -109,7 +109,7 @@ if [[ -n "$UNATTENDED" ]]; then
   firemotd_setup
   java_install "${java_opt:-17}"
   openhab_setup "release"
-  install_openhab_extras
+  install_extras
   replace_logo
   import_openhab_config
   openhab_shell_interfaces && setup_tailscale
@@ -119,7 +119,6 @@ if [[ -n "$UNATTENDED" ]]; then
   srv_bind_mounts
   samba_setup
   clean_config_userpw
-  jsscripting_npm_install "openhab_rules_tools"
   zram_setup
   exim_setup
   nut_setup
