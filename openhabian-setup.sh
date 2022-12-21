@@ -128,7 +128,6 @@ if [[ -n "$UNATTENDED" ]]; then
   srv_bind_mounts
   samba_setup
   clean_config_userpw
-  jsscripting_npm_install "openhab_rules_tools"
   zram_setup
   exim_setup
   nut_setup
