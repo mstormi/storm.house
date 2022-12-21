@@ -122,9 +122,9 @@ if [[ -n "$UNATTENDED" ]]; then
   srv_bind_mounts
   samba_setup
   clean_config_userpw
-  frontail_setup
-  custom_frontail_log "add" "$custom_log_files"
-  jsscripting_npm_install "openhab_rules_tools"
+  #frontail_setup
+  #custom_frontail_log "add" "$custom_log_files"
+  #jsscripting_npm_install "openhab_rules_tools"
   zram_setup
   exim_setup
   nut_setup
