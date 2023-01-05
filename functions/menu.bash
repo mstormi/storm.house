@@ -57,7 +57,6 @@ show_main_menu() {
   elif [[ "$choice" == "02"* ]]; then
     wait_for_apt_to_finish_update
     system_upgrade
-    #update_ems
     replace_logo
 
   elif [[ "$choice" == "03"* ]]; then
