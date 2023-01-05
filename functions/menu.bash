@@ -57,7 +57,6 @@ show_main_menu() {
   elif [[ "$choice" == "02"* ]]; then
     wait_for_apt_to_finish_update
     system_upgrade
-    #update_ems
     replace_logo
 
   elif [[ "$choice" == "03"* ]]; then
@@ -68,6 +67,7 @@ show_main_menu() {
     repo=$(apt-cache madison openhab | head -n 1 | awk '{ print $6 }' |cut -d'/' -f1)
     openhab_setup "openHAB" "$repo"
     update_ems
+    replace_logo
 
   elif [[ "$choice" == "04"* ]]; then
     import_openhab_config
