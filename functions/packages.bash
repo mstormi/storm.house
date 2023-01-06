@@ -223,6 +223,7 @@ homegear_setup() {
   echo -n "$(timestamp) [openHABian] Installing Homegear... "
   if ! cond_redirect apt-get update; then echo "FAILED (update apt lists)"; return 1; fi
   if is_raspios; then
+    temp="$(mktemp "${TMPDIR:-/tmp}"/openhabian.XXXXX)"
     wget -O "$temp" https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-2.61-1-armhf.deb
     dpkg -i "$temp"
     rm -f "$temp"
