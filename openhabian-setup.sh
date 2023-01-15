@@ -120,8 +120,7 @@ if [[ -n "$UNATTENDED" ]]; then
   samba_setup
   clean_config_userpw
   zram_setup
-  exim_setup
-  nut_setup
+  #exim_setup
   permissions_corrections
   setup_mirror_SD "install"
   install_evcc "install"
