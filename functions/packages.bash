@@ -696,6 +696,7 @@ deconz_setup() {
 ##
 ##
 install_evcc() {
+  local pkgVersion="=0.111.1"
   local port=7070
   local installText="This will install EVCC, the Electric Vehicle Charge Controller\\nUse the web interface on port $port to access EVCC's own web interface."
   local removeText="This will remove EVCC, the Electric Vehicle Charge Controller."
@@ -727,7 +728,7 @@ install_evcc() {
   ( echo "deb ${repotxt}"; echo "deb-src ${repotxt}" ) > $repo
   echo -n "$(timestamp) [openHABian] Installing EVCC... "
   if ! cond_redirect apt update; then echo "FAILED (update apt lists)"; return 1; fi
-  if ! cond_redirect apt install -y evcc; then echo "FAILED (EVCC package installation)"; return 1; fi
+  if ! cond_redirect apt install -y evcc${pkgVersion} then echo "FAILED (EVCC package installation)"; return 1; fi
 
   mkdir "$svcdir"
   sed -e "s|%USER|${username}|g" "${BASEDIR:-/opt/openhabian}"/includes/evcc-override.conf > "$svcdir/override.conf"
