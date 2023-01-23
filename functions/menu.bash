@@ -60,7 +60,7 @@ show_main_menu() {
     replace_logo
 
   elif [[ "$choice" == "03"* ]]; then
-    update_ems
+    upgrade_ems
     replace_logo
 
   elif [[ "$choice" == "04"* ]]; then
