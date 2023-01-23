@@ -727,7 +727,7 @@ install_evcc() {
   ( echo "deb ${repotxt}"; echo "deb-src ${repotxt}" ) > $repo
   echo -n "$(timestamp) [openHABian] Installing EVCC... "
   if ! cond_redirect apt update; then echo "FAILED (update apt lists)"; return 1; fi
-  if ! cond_redirect apt install -y evcc${pkgVersion} then echo "FAILED (EVCC package installation)"; return 1; fi
+  if ! cond_redirect apt install -y evcc${pkgVersion}; then echo "FAILED (EVCC package installation)"; return 1; fi
 
   mkdir "$svcdir"
   sed -e "s|%USER|${username}|g" "${BASEDIR:-/opt/openhabian}"/includes/evcc-override.conf > "$svcdir/override.conf"
