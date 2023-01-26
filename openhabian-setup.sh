@@ -107,7 +107,7 @@ if [[ -n "$UNATTENDED" ]]; then
   locale_setting
   hostname_change
   memory_split
-  enable_rpi_audio
+  #enable_rpi_audio
   basic_packages
   needed_packages
   bashrc_copy
@@ -115,7 +115,6 @@ if [[ -n "$UNATTENDED" ]]; then
   install_tailscale "install"
   misc_system_settings
   add_admin_ssh_key
-  firemotd_setup
   java_install "${java_opt:-21}"
   openhab_setup "release" "${openhabpkgversion}"
   install_extras
@@ -125,8 +124,8 @@ if [[ -n "$UNATTENDED" ]]; then
   vim_openhab_syntax
   nano_openhab_syntax
   multitail_openhab_scheme
-  srv_bind_mounts
-  samba_setup
+  #srv_bind_mounts
+  #samba_setup
   clean_config_userpw
   install_grott "install"
   deconz_setup "${deconz_port}" "${deconz_wsport}"
