@@ -100,7 +100,7 @@ if [[ -n "$UNATTENDED" ]]; then
   locale_setting
   hostname_change
   memory_split
-  enable_rpi_audio
+  #enable_rpi_audio
   basic_packages
   needed_packages
   bashrc_copy
@@ -108,7 +108,6 @@ if [[ -n "$UNATTENDED" ]]; then
   install_tailscale "install" # && setup_tailscale
   misc_system_settings
   add_admin_ssh_key
-  firemotd_setup
   java_install "${java_opt:-17}"
   openhab_setup "${clonebranch:-openHAB}" "release"
   install_extras
@@ -118,8 +117,8 @@ if [[ -n "$UNATTENDED" ]]; then
   vim_openhab_syntax
   nano_openhab_syntax
   multitail_openhab_scheme
-  srv_bind_mounts
-  samba_setup
+  #srv_bind_mounts
+  #samba_setup
   clean_config_userpw
   #frontail_setup
   #custom_frontail_log "add" "$custom_log_files"
@@ -140,8 +139,9 @@ else
   load_create_config
   openhabian_console_check
   openhabian_update_check
-  jsscripting_npm_check "openhab"
-  jsscripting_npm_check "openhab_rules_tools"
+  #jsscripting_npm_check "openhab"
+  #jsscripting_npm_check "openhab_rules_tools"
+  bashrc_copy    # TODO: Remove sometime mid 2022
   while show_main_menu; do
     true
   done
