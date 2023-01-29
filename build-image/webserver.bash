@@ -24,7 +24,7 @@ fi
 
 if [[ $1 == "inst_done" ]]; then
   mkdir -p "${TMPDIR:-/tmp}"/webserver
-  sed 's|%HOSTNAME|'"${hostname:-openhabian}"'|g' /opt/openhabian/includes/webserver/install-complete.html > "${TMPDIR:-/tmp}"/webserver/index.html
+  sed 's|%HOSTNAME|'"${hostname:-smarthouse}"'|g' /opt/openhabian/includes/webserver/install-complete.html > "${TMPDIR:-/tmp}"/webserver/index.html
 fi
 
 if [[ $1 == "cleanup" ]]; then
