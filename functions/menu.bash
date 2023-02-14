@@ -71,11 +71,7 @@ show_main_menu() {
     setup_wb_config
 
   elif [[ "$choice" == "10"* ]]; then
-<<<<<<< HEAD
-    choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "Apply Improvements" 24 118 16 --cancel-button Back --ok-button Execute \
-=======
     choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Apply Improvements" 13 116 6 --cancel-button Back --ok-button Execute \
->>>>>>> 3da582e0 (openhabian-config -> smart-house-config)
     "11 | Packages"               "Install needed and recommended system packages" \
     "12 | Bash&Vim Settings"      "Update customized settings for bash, vim and nano" \
     "13 | System Tweaks"          "Add /srv mounts and update settings typical for openHAB" \
