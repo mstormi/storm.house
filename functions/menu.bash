@@ -93,11 +93,7 @@ show_main_menu() {
     esac
 
   elif [[ "$choice" == "20"* ]]; then
-<<<<<<< HEAD
-    choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "Optional Components" 24 118 16 --cancel-button Back --ok-button Execute \
-=======
     choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Optional Components" 25 118 18 --cancel-button Back --ok-button Execute \
->>>>>>> 3da582e0 (openhabian-config -> smart-house-config)
     "21 | Log Viewer"             "openHAB Log Viewer webapp (frontail)" \
     "   | Add log to viewer"      "Add a custom log to openHAB Log Viewer (frontail)" \
     "   | Remove log from viewer" "Remove a custom log from openHAB Log Viewer (frontail)" \
@@ -147,11 +143,7 @@ show_main_menu() {
     esac
 
   elif [[ "$choice" == "30"* ]]; then
-<<<<<<< HEAD
-    choice2=$(whiptail --title "openHABian Configuration Tool — $(get_git_revision)" --menu "System Settings" 24 118 16 --cancel-button Back --ok-button Execute \
-=======
     choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "System Settings" 24 118 17 --cancel-button Back --ok-button Execute \
->>>>>>> 3da582e0 (openhabian-config -> smart-house-config)
     "31 | Change hostname"        "Change the name of this system, currently '$(hostname)'" \
     "32 | Set system locale"      "Change system language, currently '$(env | grep "^[[:space:]]*LANG=" | sed 's|LANG=||g')'" \
     "33 | Set system timezone"    "Change your timezone, execute if it's not '$(printf "%(%H:%M)T\\n" "-1")' now" \
