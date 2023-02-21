@@ -48,7 +48,7 @@ delayed_rules() {
 openhab_setup() {
   local introText
   local keyName="openhab"
-  local openhabVersion
+  local openhabVersion="3.4.2"
   local repo
   local successText
 
@@ -96,7 +96,7 @@ openhab_setup() {
 
     echo -n "$(timestamp) [openHABian] Installing selected $1 version... "
     if ! cond_redirect apt-get update; then echo "FAILED (update apt lists)"; return 1; fi
-    openhabVersion="$(apt-cache madison ${ohPkgName} | head -n 1 | cut -d'|' -f2 | xargs)"
+    #openhabVersion="$(apt-cache madison ${ohPkgName} | head -n 1 | cut -d'|' -f2 | xargs)"
     if cond_redirect apt-get install --allow-downgrades --yes -o DPkg::Lock::Timeout="$APTTIMEOUT" --option Dpkg::Options::="--force-confnew" "${ohPkgName}=${openhabVersion}" "${ohPkgName}-addons=${openhabVersion}"; then echo "OK"; else echo "FAILED"; return 1; fi
   else
     echo -n "$(timestamp) [openHABian] Installing cached openHAB version... "

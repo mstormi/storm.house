@@ -4,7 +4,7 @@ show_about() {
   if openhab3_is_installed; then OHPKG="openhab"; else OHPKG="openhab2"; fi
   whiptail --title "About storm.house and this tool" --msgbox "storm.house Configuration Tool $(get_git_revision)
 openHAB $(sed -n 's/openhab-distro\s*: //p' "/var/lib/${OHPKG}/etc/version.properties") - $(sed -n 's/build-no\s*: //p' "/var/lib/${OHPKG}/etc/version.properties")
-\\nThis Energy Management System is based on openHAB 3.4.1 (release version) and supports EVCC v0.111.1.\\n
+\\nThis Energy Management System is based on openHAB 3.4.2 (release version) and EVCC v0.111.1.\\n
 Menu 40 to select the standard release, milestone or very latest development version of openHAB and
 Menu 02 will upgrade all of your OS and applications to the latest versions, including openHAB.
 Menu 10 provides a number of system tweaks. These are already active after a standard installation while
