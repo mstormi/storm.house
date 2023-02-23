@@ -78,8 +78,6 @@ fi
 # While setup: show log to logged in user, will be overwritten by openhabian-setup.sh
 echo "watch cat /boot/first-boot.log" > "$HOME/.bash_profile"
 
-systemctl start NetworkManager
-
 # shellcheck source=/etc/openhabian.conf disable=SC2154
 if [[ -z $wifi_ssid ]]; then
   # Actually check if ethernet is working
@@ -166,6 +164,7 @@ if ! running_in_docker && tryUntil "ping -c1 8.8.8.8 &> /dev/null || curl --sile
   echo "                          After about an hour, we will continue trying to get your system installed,"
   echo "                          but without proper Internet connectivity this is not likely to be going to work."
 
+  systemctl start NetworkManager
   tryUntil "ping -c1 8.8.8.8 &> /dev/null || curl --silent --head http://www.openhab.org/docs |& grep -qs 'HTTP/1.1 200 OK'" 100 30
 else
   echo "OK"
