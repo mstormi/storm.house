@@ -105,7 +105,7 @@ if [[ -n "$UNATTENDED" ]]; then
   needed_packages
   bashrc_copy
   vimrc_copy
-  install_tailscale "install" # && setup_tailscale
+  install_tailscale "install" && setup_tailscale
   misc_system_settings
   add_admin_ssh_key
   #firemotd_setup
