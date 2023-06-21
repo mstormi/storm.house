@@ -26,8 +26,7 @@ create_systemd_dependencies() {
 openhab_setup() {
   local introText
   local keyName="openhab"
-  local openhabVersion
-  local installVersion
+  local openhabVersion="3.4.4-2"
   local repo
   local successText
   local ohPkgName="openhab"
