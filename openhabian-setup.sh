@@ -110,7 +110,7 @@ if [[ -n "$UNATTENDED" ]]; then
   add_admin_ssh_key
   #firemotd_setup
   java_install "${java_opt:-11}"
-  openhab_setup "${clonebranch:-openHAB3}" "stable" "3.4.4-2"
+  openhab_setup "${clonebranch:-openHAB3}" "release" "3.4.4-2"
   install_extras
   replace_logo
   import_openhab_config
