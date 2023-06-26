@@ -25,13 +25,12 @@ show_main_menu() {
   local choice
   local version
 
-  choice=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Setup Options" 20 116 13 --cancel-button Exit --ok-button Execute \
+  choice=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Setup Options" 20 118 12 --cancel-button Exit --ok-button Execute \
   "00 | About smart-house"       "Information about this tool ($(basename "$0"))" \
   "" "" \
   "02 | Upgrade System"          "Upgrade all installed software packages (incl. openHAB) to their latest version" \
   "03 | Update EMS"              "Update EMS to latest version" \
-  "04 | Import config"           "Import an openHAB 3 configuration from file or URL" \
-  "05 | Setup storm.house EMS"   "Setup storm.house Energy Management System" \
+  "04 | Import config"           "Import an openHAB configuration from file or URL" \
   "" "" \
   "10 | Apply Improvements"      "Apply the latest improvements to the basic setup ►" \
   "20 | Optional Components"     "Choose from a set of optional software components ►" \
@@ -65,10 +64,6 @@ show_main_menu() {
 
   elif [[ "$choice" == "04"* ]]; then
     import_openhab_config
-
-  elif [[ "$choice" == "05"* ]]; then
-    setup_pv_config
-    setup_wb_config
 
   elif [[ "$choice" == "10"* ]]; then
     choice2=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Apply Improvements" 13 116 6 --cancel-button Back --ok-button Execute \
