@@ -37,7 +37,7 @@ if source "/opt/openhabian/functions/openhabian.bash"; then echo "OK"; else echo
 if [[ "${debugmode:-on}" == "on" ]]; then
   unset SILENT
   unset DEBUGMAX
-elif [[ "${debugmode:-on}" == "maximum" ]]; then
+elif [[ "${debugmode:-on}" == "max" ]] || [[ "${debugmode:-on}" == "maximum" ]]; then
   echo "$(timestamp) [openHABian] Enable maximum debugging output"
   export DEBUGMAX=1
   set -x
