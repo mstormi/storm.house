@@ -46,7 +46,7 @@ webserver=/boot/webserver.bash
 if [[ "${debugmode:-on}" == "on" ]]; then
   unset SILENT
   unset DEBUGMAX
-elif [[ "${debugmode:-on}" == "maximum" ]]; then
+elif [[ "${debugmode:-on}" == "max" ]] || [[ "${debugmode:-on}" == "maximum" ]]; then
   echo "$(timestamp) [openHABian] Enable maximum debugging output"
   export DEBUGMAX=1
   set -x
