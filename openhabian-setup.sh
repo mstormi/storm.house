@@ -121,14 +121,11 @@ if [[ -n "$UNATTENDED" ]]; then
   #samba_setup
   clean_config_userpw
   frontail_setup
-  #custom_frontail_log "add" "$custom_log_files"
-  #jsscripting_npm_install "openhab_rules_tools"
   zram_setup
-  #exim_setup
   permissions_corrections
   setup_mirror_SD "install"
-  install_evcc "install"; setup_evcc
-  sleep 30
+  install_evcc "install" "0.118.11"; setup_evcc
+  #sleep 30
   systemctl stop openhab
   setup_pv_config pv "${invertertype:-custom}" "${inverterip:-192.168.178.100}" "${invertermodbusid:-1}"
   setup_pv_config bat "${batterytype:-hybrid}" "${batteryip:-192.168.178.101}" "${batterymodbusid:-3}"
@@ -145,8 +142,6 @@ else
   load_create_config
   openhabian_console_check
   openhabian_update_check
-  #jsscripting_npm_check "openhab"
-  #jsscripting_npm_check "openhab_rules_tools"
   while show_main_menu; do
     true
   done
