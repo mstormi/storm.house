@@ -74,7 +74,7 @@ show_main_menu() {
     fi
     repo=$(apt-cache madison openhab | head -n 1 | awk '{ print $6 }' |cut -d'/' -f1)
     openhab_setup "openHAB" "${repo:-release}"
-    update_ems
+    upgrade_ems
     replace_logo
 
   elif [[ "$choice" == "04"* ]]; then
