@@ -48,7 +48,7 @@ delayed_rules() {
 openhab_setup() {
   local introText
   local keyName="openhab"
-  local openhabVersion="4.0.3-1"
+  local openhabVersion
   local repo
   local successText
 
