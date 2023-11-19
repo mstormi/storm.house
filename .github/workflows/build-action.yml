@@ -45,7 +45,7 @@ jobs:
          with:
            path: ${{ steps.setup.outputs.image32 }}
            key: ${{ steps.setup.outputs.image32 }}
-       - name: Build openHABian images
+       - name: Build storm.house images
          id: build
          run: |
            sudo -E ./tests/ci-setup.bash github ${{ github.ref_name }}
@@ -56,34 +56,20 @@ jobs:
            done
            sed -i -e "s|ap_password:.*$|ap_password: ${{secrets.HOTSPOTPW}}|g" includes/comitup.conf
            cp build-image/template_rpi-imager-openhab.json rpi-imager-openhab.json
-           sudo -E ./build.bash rpi oldstable
            sudo -E ./build.bash rpi latest
            sudo -E ./build.bash rpi64 latest
-           echo "image32old=$(ls openhabian-raspios32-oldstable*.img.xz)" >> $GITHUB_OUTPUT
-           echo "image32=$(ls openhabian-raspios32-latest*.img.xz)" >> $GITHUB_OUTPUT
-           echo "image64=$(ls openhabian-raspios64-latest*.img.xz)" >> $GITHUB_OUTPUT
-           echo "json_image=$(ls rpi-imager-openhab.json)" >> $GITHUB_OUTPUT
-       - name: Archive openHABian 32bit bullseye image
-         uses: actions/upload-artifact@v4
-         with:
-           name: ${{ steps.build.outputs.image32old }}
-           path: ${{ steps.build.outputs.image32old }}
-       - name: Archive openHABian 32bit Debian 12 bookworm image
-         uses: actions/upload-artifact@v4
+           echo "image32=$(ls openhabian-pi-raspios32*.img.xz)" >> $GITHUB_OUTPUT
+           echo "image64=$(ls openhabian-pi-raspios64*.img.xz)" >> $GITHUB_OUTPUT
+       - name: Archive storm.house 32bit image
+         uses: actions/upload-artifact@v3
          with:
            name: ${{ steps.build.outputs.image32 }}
            path: ${{ steps.build.outputs.image32 }}
-       - name: Archive openHABian 64bit Debian 12 bookworm image
-         uses: actions/upload-artifact@v4
+       - name: Archive storm.house 64bit image
+         uses: actions/upload-artifact@v3
          with:
            name: ${{ steps.build.outputs.image64 }}
            path: ${{ steps.build.outputs.image64 }}
-       - name: Archive openHABian json of image download
-         uses: actions/upload-artifact@v4
-         with:
-           name: ${{ steps.build.outputs.json_image }}
-           path: ${{ steps.build.outputs.json_image }}
-
        - name: Create release template
          if: ${{ success() && github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
          uses: "marvinpinto/action-automatic-releases@latest"
@@ -94,7 +80,5 @@ jobs:
            prerelease: false
            draft: true
            files: |
-             ${{ steps.build.outputs.image32old }}
              ${{ steps.build.outputs.image32 }}
              ${{ steps.build.outputs.image64 }}
-             ${{ steps.build.outputs.json_image }}
