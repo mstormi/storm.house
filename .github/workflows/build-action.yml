@@ -58,8 +58,12 @@ jobs:
            cp build-image/template_rpi-imager-openhab.json rpi-imager-openhab.json
            sudo -E ./build.bash rpi oldstable
            sudo -E ./build.bash rpi64 oldstable
-           echo "image32=$(ls openhabian-pi-raspios32*.img.xz)" >> $GITHUB_OUTPUT
-           echo "image64=$(ls openhabian-pi-raspios64*.img.xz)" >> $GITHUB_OUTPUT
+           mv openhabian-pi-raspios32*.img.xz storm.house-32-$(date +%Y%m%d%H%M).img.xz
+           mv openhabian-pi-raspios64*.img.xz storm.house-64-$(date +%Y%m%d%H%M).img.xz
+           #echo "image32=$(ls openhabian-pi-raspios32*.img.xz)" >> $GITHUB_OUTPUT
+           #echo "image64=$(ls openhabian-pi-raspios64*.img.xz)" >> $GITHUB_OUTPUT
+           echo "image32=$(ls storm.house-32*.img.xz)" >> $GITHUB_OUTPUT
+           echo "image64=$(ls storm.house-64*.img.xz)" >> $GITHUB_OUTPUT
            echo "json_image=$(ls rpi-imager-openhab.json)" >> $GITHUB_OUTPUT
        - name: Archive storm.house 32bit image
          uses: actions/upload-artifact@v3
