@@ -38,9 +38,9 @@ jobs:
            sudo -E bash -c set
            sudo apt-get update
            sudo apt-get install --yes libarchive-zip-perl dos2unix systemd-container qemu-user-static qemu-utils
-           echo "image32=$(basename "$(curl "https://downloads.raspberrypi.org/raspios_lite_armhf_latest" -s -L -I  -o /dev/null -w '%{url_effective}')")" >> $GITHUB_OUTPUT
-           echo "image64=$(basename "$(curl "https://downloads.raspberrypi.org/raspios_lite_arm64_latest" -s -L -I  -o /dev/null -w '%{url_effective}')")" >> $GITHUB_OUTPUT
-       - name: Cache Raspberry Pi OS 32bit image
+           echo "image32=$(basename "$(curl "https://downloads.raspberrypi.org/raspios_oldstable_lite_armhf_latest" -s -L -I  -o /dev/null -w '%{url_effective}')")" >> $GITHUB_OUTPUT
+           #echo "image64=$(basename "$(curl "https://downloads.raspberrypi.org/raspios_lite_arm64_latest" -s -L -I  -o /dev/null -w '%{url_effective}')")" >> $GITHUB_OUTPUT
+       - name: Cache Raspberry Pi OS bullseye 32bit image
          uses: actions/cache@v3
          with:
            path: ${{ steps.setup.outputs.image32 }}
@@ -49,19 +49,18 @@ jobs:
          id: build
          run: |
            sudo -E ./tests/ci-setup.bash github ${{ github.ref_name }}
-           for f in "openhabian.conf openhabian.pi-raspios32.conf openhabian.pi-raspios64.conf"; do
-             if [[ -f build-image/$f ]]; then
-               sed -i -e "s|^userpw=.*$|userpw=\"${{secrets.USERPW}}\"|g" build-image/$f
-             fi
-           done
+           #for f in "openhabian.conf openhabian.pi-raspios32.conf openhabian.pi-raspios64.conf"; do
+             #if [[ -f build-image/$f ]]; then
+               #sed -i -e "s|^userpw=.*$|userpw=\"${{secrets.USERPW}}\"|g" build-image/$f
+             #fi
+           #done
+           sed -i -e "s|^userpw=.*$|userpw=\"${{secrets.USERPW}}\"|g" build-image/openhabian.conf
            sed -i -e "s|ap_password:.*$|ap_password: ${{secrets.HOTSPOTPW}}|g" includes/comitup.conf
            cp build-image/template_rpi-imager-openhab.json rpi-imager-openhab.json
            sudo -E ./build.bash rpi oldstable
            sudo -E ./build.bash rpi64 oldstable
            mv openhabian-pi-raspios32*.img.xz storm.house-32-$(date +%Y%m%d%H%M).img.xz
            mv openhabian-pi-raspios64*.img.xz storm.house-64-$(date +%Y%m%d%H%M).img.xz
-           #echo "image32=$(ls openhabian-pi-raspios32*.img.xz)" >> $GITHUB_OUTPUT
-           #echo "image64=$(ls openhabian-pi-raspios64*.img.xz)" >> $GITHUB_OUTPUT
            echo "image32=$(ls storm.house-32*.img.xz)" >> $GITHUB_OUTPUT
            echo "image64=$(ls storm.house-64*.img.xz)" >> $GITHUB_OUTPUT
            echo "json_image=$(ls rpi-imager-openhab.json)" >> $GITHUB_OUTPUT
