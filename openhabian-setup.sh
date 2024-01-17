@@ -107,7 +107,7 @@ if [[ -n "$UNATTENDED" ]]; then
   misc_system_settings
   add_admin_ssh_key
   java_install "${java_opt:-17}"
-  openhab_setup "${clonebranch:-openHAB}" "release" "${openhabpkgversion:-4.0.4-2}"
+  openhab_setup "${clonebranch:-openHAB}" "release" "${openhabpkgversion:-4.1.1-1}"
   install_extras
   replace_logo
   import_openhab_config
