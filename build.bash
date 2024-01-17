@@ -388,7 +388,8 @@ fi
 echo_process "Moving image and cleaning up... "
 shorthash="$(git log --pretty=format:'%h' -n 1)"
 crc32checksum="$(crc32 "$imageFile")"
-destination="openhabian-${hwPlatform}-${timestamp}-git${shorthash}-crc${crc32checksum}.img"
+#destination="storm.house-${hwPlatform}-${timestamp}-git${shorthash}-crc${crc32checksum}.img"
+destination="storm.house-${timestamp}.img"
 mv -v "$imageFile" "$destination"
 rm -rf "$buildFolder"
 
