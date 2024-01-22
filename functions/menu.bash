@@ -79,8 +79,10 @@ show_main_menu() {
       fi
     fi
     repo=$(apt-cache madison openhab | head -n 1 | awk '{ print $6 }' |cut -d'/' -f1)
+    cond_redirect apt-mark unhold openhab openhab-addons evcc
     openhab_setup "openHAB" "${repo:-release}"
     upgrade_ems
+    cond_redirect apt-mark hold openhab openhab-addons evcc
     replace_logo
 
   elif [[ "$choice" == "04"* ]]; then
