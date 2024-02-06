@@ -81,15 +81,7 @@ show_main_menu() {
     repo=$(apt-cache madison openhab | head -n 1 | awk '{ print $6 }' |cut -d'/' -f1)
     openhab_setup "${repo:-release}" "${openhabpkgversion}"
     cond_redirect apt-mark unhold openhab openhab-addons evcc
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    if ! cond_redirect apt install -y evcc; then echo "FAILED (EVCC package installation)"; return 1; fi
-=======
-    if ! cond_redirect apt install -y evcc="${evccpkgversion:-0.123.9}"; then echo "FAILED (EVCC package installation)"; return 1; fi
->>>>>>> 0697f0b14 (update evcc, too)
-    openhab_setup "openHAB" "${repo:-release}"
->>>>>>> 2a3c3297f (update evcc, too)
+    openhab_setup "${repo:-release}"
     upgrade_ems
     cond_redirect apt-mark hold openhab openhab-addons evcc
     replace_logo
