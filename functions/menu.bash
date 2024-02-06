@@ -80,7 +80,7 @@ show_main_menu() {
     openhab_setup "openHAB" "${repo:-release}"
 >>>>>>> 2a3c3297f (update evcc, too)
     upgrade_ems
-    cond_redirect apt-mark hold openhab openhab-addons evcc
+    cond_redirect apt-mark hold openhab openhab-addons evcc="${evccpkgversion:-0.123.9}"
     replace_logo
 
   elif [[ "$choice" == "04"* ]]; then
