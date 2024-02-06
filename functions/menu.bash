@@ -74,6 +74,11 @@ show_main_menu() {
     # shellcheck disable=SC2154
     openhab_setup "${repo:-release}" "${openhabpkgversion}"
     cond_redirect apt-mark unhold openhab openhab-addons evcc
+<<<<<<< HEAD
+=======
+    if ! cond_redirect apt install -y evcc; then echo "FAILED (EVCC package installation)"; return 1; fi
+    openhab_setup "openHAB" "${repo:-release}"
+>>>>>>> 2a3c3297f (update evcc, too)
     upgrade_ems
     cond_redirect apt-mark hold openhab openhab-addons evcc
     replace_logo
