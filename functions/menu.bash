@@ -70,7 +70,6 @@ show_main_menu() {
         whiptail --title "outdated OS" --msgbox "You are running a too old version of your Operating System.\\n\\nOpenHAB 4 and Java 17 require that you upgrade to Debian 11 (bullseye) first." 8 80
         return 255
     fi
-
     javaVersion="$(java -version |& grep -m 1 -o "[0-9]\{0,3\}\.[0-9]\{0,3\}\.[0-9]\{0,3\}[\.+][0-9]\{0,3\}" | head -1|cut -d '.' -f1)"
     if [[ $(apt-cache madison openhab | head -n 1 | awk '{ print $3 }' | cut -d'.' -f1) = 4 ]]; then
       if [[ $javaVersion -lt 17 ]] ; then
