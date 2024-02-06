@@ -7,7 +7,7 @@
 
 ## Generate/copy openHAB config for a PV inverter
 ##
-## Valid Arguments:
+## valid arguments:
 ## #1 = pv | bat | meter
 ## #2 = device type #1=pv:    e3dc | fronius | huawei | kostal | senec | sma | solaredge | solax | sungrow (default) | victron | custom
 ##                  #1=bat:   hybrid (default) |
@@ -33,10 +33,6 @@ setup_pv_config() {
   local muser
   local mpass
 
-
-  if [[ ! -f /usr/local/sbin/setup_pv_config && $(whoami) == "root" ]]; then
-    if ! cond_redirect ln -fs "${includesDir}/setup_ems_hw" /usr/local/sbin/setup_pv_config; then echo "FAILED (install setup_pv_config script)"; return 1; fi
-  fi
 
   if [[ -n "$UNATTENDED" ]]; then
     echo -n "$(timestamp) [storm.house] PV ${1} installation... "
@@ -67,7 +63,7 @@ setup_pv_config() {
     destfile="${OPENHAB_CONF:-/etc/openhab}/${configdomain}/${device}.${configdomain}"
     rm -f "$destfile"
 
-    if [[ -f ${srcfile} ]]; then
+    if [[ ${2:-${default}} != "custom" ]] && [[ ${2:-${default}} != "keine" ]] && [[ -f ${srcfile} ]]; then
       cp -p "$srcfile" "${OPENHAB_CONF:-/etc/openhab}/${configdomain}/${device}.${configdomain}"
       if [[ $(whoami) == "root" ]]; then
         chown "${username:-openhabian}:openhab" "${OPENHAB_CONF:-/etc/openhab}/${configdomain}/${device}.${configdomain}"
@@ -75,7 +71,7 @@ setup_pv_config() {
       fi
 
       if [[ "${device}" == "pv" && "${2:-$invertertype}" == "huaweilogger" ]]; then
-        # %HUAWEI1 bzw 2 = 51000 + 25 * (MBID - 1) + 5 bzw 9 berechnen
+        # %HUAWEI1 bzw. 2 = 51000 + 25 * (MBID - 1) + 5 bzw 9 berechnen
         Erzeugung=$((51000 + 25 * (mbid - 1) + 5))
         PVStatus=$((Erzeugung + 4))
         sed -i "s|%HUAWEI1|${Erzeugung}|;s|%HUAWEI2|${PVStatus}|" "${destfile}"
@@ -107,76 +103,58 @@ setup_pv_config() {
 }
 
 
-## Generate/copy openHAB config for a PV inverter and optional a meter, too
-## Valid Arguments: e3dc | fronius | huawei | kostal | senec | sma | solaredge | solax | sungrow | victron | custom
-##                  IP address of inverter
-##     (optional)   IP address of meter
+## Generate/copy openHAB config for whitegood appliances
+## valid arguments:
+## #1 IP address of washing machine actuator
+## #2 IP address of dish washer actuator
+## #3 user name to access Shelly actuators (common to all white good actuators)
+## #4 password to access Shelly actuators (common to all white good actuators)
 ##
-##    setup_inv_config(String inverter type,String inverter IP,String meter IP)
+##    setup_whitegood_config(String washing machine IP,String dish washer IP,String actuator user name,String actuator password)
 ##
-setup_inv_config() {
+
+
+#TODO:
+# diese Routine vervollständigen
+# wie leere user/pass abfangen ? => wie ist das bei der 3em-Provisionierung gemacht ?
+setup_charger() {
+  local thing=generisch.things
+  local includesDir="${OPENHAB_CONF:-/etc/openhab}/things/"
+  local srcfile="${includesDir}/STORE/${thing}"
+  local destfile="${includesDir}/${thing}"
+
+
+  sed -e "s|%IP|${1:-${chargeractuatorip}}|;s|%USER|${2:-${chargeractuatoruser}}|;s|%PASS|${3:-${chargeractuatorpass}}|" "${srcfile}" > "${destfile}"
+}
+
+
+## Generate/copy openHAB config for whitegood appliances
+## valid arguments:
+## #1 IP address of washing machine actuator
+## #2 IP address of dish washer actuator
+## #3 user name to access Shelly actuators (common to all white good actuators)
+## #4 password to access Shelly actuators (common to all white good actuators)
+##
+##    setup_whitegood_config(String washing machine IP,String dish washer IP,String actuator user name,String actuator password)
+##
+
+
+#TODO:
+# diese Routine vervollständigen
+# wie leere user/pass abfangen ? => wie ist das bei der 3em-Provisionierung gemacht ?
+setup_whitegood_config() {
   local includesDir="${BASEDIR:-/opt/openhabian}/includes"
-  local inverterPNG="${OPENHAB_CONF:-/etc/openhab}/icons/classic/inverter.png"
-  local srcfile
   local destfile
 
 
-  if [[ ! -f /usr/local/sbin/setup_inv_config  && $(whoami) == "root" ]]; then
-    if ! cond_redirect ln -fs "${includesDir}/setup_ems_hw" /usr/local/sbin/setup_inv_config; then echo "FAILED (install setup_inv_config script)"; return 1; fi
-  fi
-
-  if [[ -n "$UNATTENDED" ]]; then
-    echo -n "$(timestamp) [storm.house] inverter installation... "
-    if [[ -z "${1:-$invertertype}" ]]; then echo "SKIPPED (no inverter defined)"; return 1; fi
-  fi
-
-  if [[ -n "$INTERACTIVE" ]]; then
-    if [[ -z "${1:-$invertertype}" ]]; then
-      if ! invertertype="$(whiptail --title "Wechselrichter Auswahl" --cancel-button Cancel --ok-button Select --menu "\\nWählen Sie den Wechselrichtertyp aus" 18 100 9 "e3dc" "E3DC Hauskraftwerk" "fronius" "Fronius Symo" "huawei" "Huawei Sun 2000/Luna" "kostal" "Kostal Plenticore" "senec" "Senec Home" "sma" "SMA (experimental)" "solaredge" "SolarEdge SE (noch in Arbeit)" "solax" "Solax X1/X3" "sungrow" "Sungrow SH RT" "victron" "Victron mit Gateway (experimental)" "custom" "manuelle Konfiguration" 3>&1 1>&2 2>&3)"; then unset invertertype; return 1; fi
-    fi
-    if ! inverterip=$(whiptail --title "Wechselrichter IP" --inputbox "Welche IP-Adresse hat der Wechselrichter ?" 10 60 "${inverterip:-192.168.178.100}" 3>&1 1>&2 2>&3); then unset invertertype inverterip; return 1; fi
-  fi
-
-  for component in things items rules; do
-    srcfile="${OPENHAB_CONF:-/etc/openhab}/${component}/STORE/${1:-${invertertype}}.${component}"
-    destfile="${OPENHAB_CONF:-/etc/openhab}/${component}/pv.${component}"
-    if [[ ${1:-${invertertype}} == "custom" && -f ${destfile} ]]; then
-        break
-    fi
-    rm -f "$destfile"
-    if [[ -f ${srcfile} ]]; then
-      cp "$srcfile" "${OPENHAB_CONF:-/etc/openhab}/${component}/pv.${component}"
-      if [[ $(whoami) == "root" ]]; then
-        chown "${username:-openhabian}:openhab" "${OPENHAB_CONF:-/etc/openhab}/${component}/pv.${component}"
-        chmod 664 "${OPENHAB_CONF:-/etc/openhab}/${component}/pv.${component}"
-      fi
-    fi
-  done
-
-
-  srcfile="${OPENHAB_CONF:-/etc/openhab}/icons/STORE/inverter/${1:-${invertertype}}.png"
-  if [[ -f $srcfile ]]; then
-    cp "$srcfile" "$inverterPNG"
-  fi
-  if [[ $(whoami) == "root" ]]; then
-    chown "${username:-openhabian}:openhab" "$inverterPNG"
-    chmod 664 "$inverterPNG"
-  fi
-
-  sed -i "s|%IP|${2:-${inverterip}}|" "${OPENHAB_CONF:-/etc/openhab}/things/pv.things"
-  
-  if [[ $# -gt 2 ]]; then
-    sed -i "s|%METERIP|${3:-${meterip}}|" "${OPENHAB_CONF:-/etc/openhab}/things/pv.things"
-  fi
-
-  echo "OK"
-  if [[ -n "$INTERACTIVE" ]]; then
-    whiptail --title "Installation erfolgreich" --msgbox "Das Energie Management System nutzt jetzt einen ${1:-${invertertype}} Wechselrichter." 8 80
-  fi
+  destfile="${OPENHAB_CONF:-/etc/openhab}/things/weisseWare.things"
+  sed -i "s|%IPW|${1:-${washingmachineip}}|;s|%IPS|${1:-${dishwasherip}}|;s|%USER|${1:-${whitegooduser}}|;s|%PASS|${1:-${whitegoodpass}}|" "${destfile}"
 }
 
+
+
 ## Generate/copy openHAB config for a wallbox
-## Valid Arguments:
+## valid arguments:
 ##
 ## #1 wallbox type (from EVCC)
 ## abl cfos easee eebus evsewifi go-e go-e-v3 heidelberg keba mcc nrgkick-bluetooth nrgkick-connect
@@ -222,10 +200,6 @@ setup_wb_config() {
     if ! sed -e "/$1/s/^$1//g" -i "$2"; then echo "FAILED (uncomment)"; return 1; fi
   }
 
-
-  if [[ ! -f /usr/local/sbin/setup_wb_config && $(whoami) == "root" ]]; then
-    if ! cond_redirect ln -fs "${includesDir}/setup_ems_hw" /usr/local/sbin/setup_wb_config; then echo "FAILED (install setup_wb_config script)"; return 1; fi
-  fi
 
   if [[ -n "$UNATTENDED" ]]; then
     echo -n "$(timestamp) [storm.house] wallbox installation... "
@@ -274,8 +248,9 @@ setup_wb_config() {
   sed -e "s|%WBTYPE|${1:-${wallboxtype:-demo}}|;s|%IP|${2:-${wallboxip:-192.168.178.200}}|;s|%WBID|${3:-${wallboxid}}|;s|%TOKEN|${4:-${evcctoken}}|;s|%CARTYPE1|${5:-${cartype1:-offline}}|;s|%CARNAME1|${6:-${carname1:-meinEAuto1}}|;s|%VIN1|${7:-${vin1:-0000000000}}|;s|%CARCAPACITY1|${8:-${carcapacity1:-50}}|;s|%CARUSER1|${9:-${caruser1:-user}}|;s|%CARPASS1|${10:-${carpass1:-pass}}|;s|%CARTYPE2|${11:-${cartype2:-offline}}|;s|%CARNAME2|${12:-${carname2:-meinEAuto2}}|;s|%VIN2|${13:-${vin2:-0000000000}}|;s|%CARCAPACITY2|${14:-${carcapacity2:-50}}|;s|%CARUSER2|${15:-${caruser2:-user}}|;s|%CARPASS2|${16:-${carpass2:-pass}}|;s|%GRIDCOST|${17:-${gridcost:-40}}|;s|%FEEDINCOMPENSATION|${18:-${feedincompensation:-8.2}}|" "$temp" | grep -Evi ': NULL$' > "$evccConfig"
   rm -f "${temp}"
 
-  evcc eebus-cert -c "${evccConfig}" | tail +6 >> "$evccConfig"
-
+  if ! grep -q "[[:space:]]certificate" ~evcc/evcc.yaml ; then
+    evcc eebus-cert -c "${evccConfig}" | tail +6 >> "$evccConfig"
+  fi
   if [[ ${3:-${wallboxid}} != "" && ${3:-${wallboxid}} != "1234567890abcdef" ]] || [[ ${1:-${wallboxtype}} == "eebus" || ${1:-${wallboxtype}} == "elliconnect" || ${1:-${wallboxtype}} == "ellipro" ]]; then
     uncomment "#SKI" "${evccConfig}"
   fi
@@ -306,10 +281,6 @@ setup_power_config() {
   local includesDir="${BASEDIR:-/opt/openhabian}/includes"
   local srcfile
 
-
-  if [[ ! -f /usr/local/sbin/setup_power_config && $(whoami) == "root" ]]; then
-    if ! cond_redirect ln -fs "${includesDir}/setup_ems_hw" /usr/local/sbin/setup_power_config; then echo "FAILED (install setup_power_config script)"; return 1; fi
-  fi
 
   if [[ -n "$UNATTENDED" ]]; then
     echo -n "$(timestamp) [storm.house] power tariff setup ... "
@@ -369,6 +340,61 @@ replace_logo() {
 }
 
 
+## Install non-standard bindings etc
+##
+##    install_extras()
+##
+install_extras() {
+  local includesDir="${BASEDIR:-/opt/openhabian}/includes"
+  local deckey="/etc/ssl/private/ems.key"
+  local solarforecastJAR=org.openhab.binding.solarforecast-3.4.0-SNAPSHOT.jar
+  local entsoeJAR=org.openhab.binding.entsoe-4.0.5-SNAPSHOT.jar
+  local solarforecastPKG="https://github.com/weymann/OH3-SolarForecast-Drops/blob/main/3.4/${solarforecastJAR}"
+  #local entsoePKG="https://github.com/gitMiguel/openhab-addons/releases/download/EntsoE-4.1.0-SNAPTSHOT/${entsoeJAR}"
+  local destdir="/usr/share/openhab/addons/"
+  local sudoersFile="011_ems"
+  local sudoersPath="/etc/sudoers.d"
+  local addonsCfg="${OPENHAB_CONF}/services/addons.cfg"
+
+
+  if [[ $(whoami) == "root" ]]; then
+    if [[ ! -f /usr/local/sbin/upgrade_ems ]]; then
+      if ! cond_redirect ln -fs "${includesDir}/setup_ems_hw" /usr/local/sbin/upgrade_ems; then echo "FAILED (install upgrade_ems script)"; fi
+    fi
+    if [[ ! -f /usr/local/sbin/setup_pv_config ]]; then
+      if ! cond_redirect ln -fs "${includesDir}/setup_ems_hw" /usr/local/sbin/setup_pv_config; then echo "FAILED (install setup_pv_config script)"; return 1; fi
+    fi
+    if [[ ! -f /usr/local/sbin/setup_wb_config ]]; then
+      if ! cond_redirect ln -fs "${includesDir}/setup_ems_hw" /usr/local/sbin/setup_wb_config; then echo "FAILED (install setup_wb_config script)"; return 1; fi
+    fi
+    if [[ ! -f /usr/local/sbin/setup_power_config ]]; then
+      if ! cond_redirect ln -fs "${includesDir}/setup_ems_hw" /usr/local/sbin/setup_power_config; then echo "FAILED (install setup_power_config script)"; return 1; fi
+    fi
+    if [[ ! -f /usr/local/sbin/setup_charger ]]; then
+      if ! cond_redirect ln -fs "${includesDir}/setup_ems_hw" /usr/local/sbin/setup_charger; then echo "FAILED (install setup_charger script)"; return 1; fi
+    fi
+    if [[ ! -f /usr/local/sbin/setup_whitegood_config ]]; then
+      if ! cond_redirect ln -fs "${includesDir}/setup_ems_hw" /usr/local/sbin/setup_whitegood_config; then echo "FAILED (install setup_whitegood_config script)"; return 1; fi
+    fi
+  fi
+
+  cond_redirect install -m 640 "${BASEDIR:-/opt/openhabian}/includes/${sudoersFile}" "${sudoersPath}/"
+
+  version=$(dpkg -s 'openhab' 2> /dev/null | grep Version | cut -d' ' -f2 | cut -d'-' -f1 | cut -d'.' -f2)
+  if [[ $version -lt 4 ]]; then
+    if ! cond_redirect wget -nv -O "${destdir}/${solarforecastJAR}" "${solarforecastPKG}"; then echo "FAILED (download inofficial solar forecast binding)"; rm -f "${destdir}/${solarforecastJAR}"; fi
+  fi
+  if ! cond_redirect install -m 644 --owner="${username:-admin}" --group="${groupname:-openhab}" "${BASEDIR:-/opt/openhabian}"/includes/JARs/${entsoeJAR} ${destdir}/${entsoeJAR}; then echo "FAILED (Entso-E jar)"; return 1; fi
+
+  cond_redirect install -m 644 "${includesDir}/openhab_rsa.pub" "${OPENHAB_USERDATA:-/var/lib/openhab}/etc/"
+  cond_redirect install -m 600 "${includesDir}/openhab_rsa" "${OPENHAB_USERDATA:-/var/lib/openhab}/etc/"
+  cond_redirect chown "${username:-openhabian}:openhab" "${OPENHAB_USERDATA:-/var/lib/openhab}/etc/openhab_rsa*"
+  cond_redirect install -m 640 "${includesDir}/generic/ems.key" $deckey
+
+  (echo suggestionFinderIp=false; echo suggestionFinderMdns=false; echo suggestionFinderUpnp=false) >> "${addonsCfg}"
+}
+
+
 # TODO: UNATTENDED mode damit Updates aus UI möglich
 
 ## Retrieve latest EMS code from website
@@ -390,12 +416,12 @@ upgrade_ems() {
 
   tempdir="$(mktemp -d "${TMPDIR:-/tmp}"/updatedir.XXXXX)"
   temp="$(mktemp "${tempdir:-/tmp}"/updatefile.XXXXX)"
-echo  backup_openhab_config
+  echo  backup_openhab_config
 
   # user credentials retten
-echo  cp "${OPENHAB_USERDATA:-/var/lib/openhab}/jsondb/users.json" "${tempdir}/"
+  echo  cp "${OPENHAB_USERDATA:-/var/lib/openhab}/jsondb/users.json" "${tempdir}/"
   # Settings retten
-echo  cp -rp "${OPENHAB_USERDATA:-/var/lib/openhab}/persistence/mapdb" "${tempdir}/"
+  echo  cp -rp "${OPENHAB_USERDATA:-/var/lib/openhab}/persistence/mapdb" "${tempdir}/"
 
   # Abfrage ob Voll- oder Teilimport mit Warnung dass eigene Änderungen überschrieben werden
   mode=${1}
@@ -426,7 +452,10 @@ echo  cp -rp "${OPENHAB_USERDATA:-/var/lib/openhab}/persistence/mapdb" "${tempdi
     cp -rp "${tempdir}/mapdb" /opt/zram/persistence.bind/
   fi
 
+  install_extras
+
   permissions_corrections   # sicherheitshalber falls Dateien durch git nicht mehr openhab gehören
+
   if [[ -n "$INTERACTIVE" ]]; then
     whiptail --title "EMS update erfolgreich" --msgbox "Das storm.house Energie Management System ist jetzt auf dem neuesten Stand." 8 80
   fi
@@ -436,41 +465,26 @@ echo  cp -rp "${OPENHAB_USERDATA:-/var/lib/openhab}/persistence/mapdb" "${tempdi
 }
 
 
-## Install non-standard bindings etc
+##    finalize_setup
 ##
-##    install_extras()
-##
-install_extras() {
+finalize_setup() {
   local serviceTargetDir="/etc/systemd/system"
   local includesDir="${BASEDIR:-/opt/openhabian}/includes"
-  local deckey="/etc/ssl/private/ems.key"
-  local solarforecastJAR=org.openhab.binding.solarforecast-3.4.0-SNAPSHOT.jar
-  #local jar=org.openhab.binding.solarforecast-3.4.0-SNAPSHOT.jar
-  local entsoeJAR=org.openhab.binding.entsoe-4.1.0-SNAPSHOT.jar
-  local solarforecastPKG="https://github.com/weymann/OH3-SolarForecast-Drops/blob/main/3.4/${solarforecastJAR}"
-  local entsoePKG="https://github.com/gitMiguel/openhab-addons/releases/download/EntsoE-4.1.0-SNAPTSHOT/${entsoeJAR}"
-  local destdir="/usr/share/openhab/addons/"
-  local sudoersFile="011_ems"
-  local sudoersPath="/etc/sudoers.d"
+
+
+  # shellcheck disable=SC2155
+  local evccuser="$(systemctl show -pUser evcc | cut -d= -f2)"
+  # shellcheck disable=SC2155
+  local evccdir=$(eval echo "~${evccuser:-${username:-openhabian}}")
+  local oldYaml="${OPENHAB_USERDATA:-/var/lib/openhab}/evcc.yaml"
   local passwdCommand="/usr/bin/ssh -p 8101 -o StrictHostKeyChecking=no -i /var/lib/openhab/etc/openhab_rsa openhab@localhost users changePassword admin ${userpw:-admin}"
   local passwdCommand2="/usr/bin/ssh -p 8101 -o StrictHostKeyChecking=no -i /var/lib/openhab/etc/openhab_rsa openhab@localhost users add demo demo user"
 
+  rm -f "${oldYaml}"	# um Verwechslungen vorzubeugen
+  ln -s "${evccdir}/evcc.yaml" "${oldYaml}"
 
-  if [[ ! -f /usr/local/sbin/upgrade_ems && $(whoami) == "root" ]]; then
-    if ! cond_redirect ln -fs "${includesDir}/setup_ems_hw" /usr/local/sbin/upgrade_ems; then echo "FAILED (install upgrade_ems script)"; fi
-  fi
-  cond_redirect install -m 640 "${BASEDIR:-/opt/openhabian}/includes/${sudoersFile}" "${sudoersPath}/"
-
-  version=$(dpkg -s 'openhab' 2> /dev/null | grep Version | cut -d' ' -f2 | cut -d'-' -f1 | cut -d'.' -f2)
-  if [[ $version -lt 4 ]]; then
-    if ! cond_redirect wget -nv -O "${destdir}/${solarforecastJAR}" "${solarforecastPKG}"; then echo "FAILED (download inofficial solar forecast binding)"; rm -f "${destdir}/${solarforecastJAR}"; fi
-  fi
-  if ! cond_redirect wget -nv -O "${destdir}/${entsoeJAR}" "${entsoePKG}"; then echo "FAILED (download inofficial Entso-E binding)"; rm -f "${destdir}/${entsoeJAR}"; fi
-
-  cond_redirect install -m 644 "${includesDir}/openhab_rsa.pub" "${OPENHAB_USERDATA:-/var/lib/openhab}/etc/"
-  cond_redirect install -m 600 "${includesDir}/openhab_rsa" "${OPENHAB_USERDATA:-/var/lib/openhab}/etc/"
-  cond_redirect chown "${username:-openhabian}:openhab" "${OPENHAB_USERDATA:-/var/lib/openhab}/etc/openhab_rsa*"
-  cond_redirect install -m 640 "${includesDir}/generic/ems.key" $deckey
+  # Pakete dürfen beim apt upgrade nicht auf die neuesten Versionen aktualisiert werden
+  cond_redirect apt-mark hold openhab openhab-addons evcc
 
   # shellcheck disable=SC2046
   cond_redirect $(${passwdCommand})
@@ -484,26 +498,6 @@ install_extras() {
   if ! cond_redirect ln -s /usr/bin/openssl /usr/local/sbin/openssl11; then echo "FAILED (link openssl binary)"; fi
   if ! cond_redirect systemctl -q daemon-reload; then echo "FAILED (daemon-reload)"; return 1; fi
   if ! cond_redirect systemctl enable --now lc.timer lc.service; then echo "FAILED (enable timed lc start)"; fi
-}
-
-
-##    finalize_setup
-##
-finalize_setup() {
-  # shellcheck disable=SC2155
-  local evccuser="$(systemctl show -pUser evcc | cut -d= -f2)"
-  # shellcheck disable=SC2155
-  local evccdir=$(eval echo "~${evccuser:-${username:-openhabian}}")
-  local oldYaml="${OPENHAB_USERDATA:-/var/lib/openhab}/evcc.yaml"
-
-
-  rm -f "${oldYaml}"	# um Verwechslungen vorzubeugen
-  ln -s "${evccdir}/evcc.yaml" "${oldYaml}"
-
-  # Pakete dürfen beim apt upgrade nicht auf die neuesten Versionen aktualisiert werden
-  cond_redirect apt-mark hold openhab openhab-addons evcc
-
-  #(sleep 600; /usr/bin/ssh -p 8101 -o StrictHostKeyChecking=no -i /var/lib/openhab/etc/openhab_rsa openhab@localhost 'openhab:send NeuinitialisierungEnergiemanagement ON' ) &
 }
 
 
@@ -594,4 +588,3 @@ retrieve_license() {
     ems_lic enable
   fi
 }
-

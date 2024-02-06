@@ -105,15 +105,15 @@ if [[ -n "$UNATTENDED" ]]; then
   needed_packages
   bashrc_copy
   vimrc_copy
-  install_tailscale "install" && setup_tailscale
+  install_tailscale "install"
   misc_system_settings
   add_admin_ssh_key
   java_install "${java_opt:-17}"
-  openhab_setup "${clonebranch:-openHAB}" "release" "${openhabpkgversion:-4.0.4-2}"
+  openhab_setup "${clonebranch:-openHAB}" "release" "${openhabpkgversion:-4.1.1-1}"
   install_extras
   replace_logo
   import_openhab_config
-  openhab_shell_interfaces
+  openhab_shell_interfaces && setup_tailscale
   vim_openhab_syntax
   nano_openhab_syntax
   multitail_openhab_scheme
@@ -125,7 +125,7 @@ if [[ -n "$UNATTENDED" ]]; then
   zram_setup
   permissions_corrections
   setup_mirror_SD "install"
-  install_evcc "install" "${evccpkgversion:-0.122.1}"; setup_evcc
+  install_evcc "install" "${evccpkgversion:-0.123.9}"; setup_evcc
   systemctl stop openhab
   setup_pv_config pv "${invertertype:-custom}" "${inverterip:-192.168.178.100}" "${invertermodbusid:-1}"
   setup_pv_config bat "${batterytype:-hybrid}" "${batteryip:-192.168.178.101}" "${batterymodbusid:-3}"
