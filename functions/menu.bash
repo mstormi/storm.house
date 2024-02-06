@@ -29,7 +29,6 @@ Menu 50 provides options to backup and restore either your openHAB configuration
 show_main_menu() {
   local choice
   local version
-  local jdkBin
   local javaVersion
 
   choice=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Setup Options" 20 118 12 --cancel-button Exit --ok-button Execute \
@@ -71,8 +70,7 @@ show_main_menu() {
         whiptail --title "outdated OS" --msgbox "You are running a too old version of your Operating System.\\n\\nOpenHAB 4 and Java 17 require that you upgrade to Debian 11 (bullseye) first." 8 80
         return 255
     fi
-    jdkBin="$(find /opt/jdk/*/bin ... -print -quit)"
-    javaVersion="$("${jdkBin}"/java -version |& grep -m 1 -o "[0-9]\{0,3\}\.[0-9]\{0,3\}\.[0-9]\{0,3\}[\.+][0-9]\{0,3\}" | head -1|cut -d '.' -f1)"
+    javaVersion="$(java -version |& grep -m 1 -o "[0-9]\{0,3\}\.[0-9]\{0,3\}\.[0-9]\{0,3\}[\.+][0-9]\{0,3\}" | head -1|cut -d '.' -f1)"
     if [[ $(apt-cache madison openhab | head -n 1 | awk '{ print $3 }' | cut -d'.' -f1) = 4 ]]; then
       if [[ $javaVersion -lt 17 ]] ; then
         update_config_java "17"
@@ -81,6 +79,7 @@ show_main_menu() {
     fi
     repo=$(apt-cache madison openhab | head -n 1 | awk '{ print $6 }' |cut -d'/' -f1)
     cond_redirect apt-mark unhold openhab openhab-addons evcc
+    if ! cond_redirect apt install -y --allow-downgrades evcc="0.123.9"; then echo "FAILED (EVCC package installation)"; return 1; fi
     openhab_setup "openHAB" "${repo:-release}"
     upgrade_ems
     cond_redirect apt-mark hold openhab openhab-addons evcc
