@@ -83,7 +83,7 @@ show_main_menu() {
     if ! cond_redirect apt install -y evcc; then echo "FAILED (EVCC package installation)"; return 1; fi
     openhab_setup "openHAB" "${repo:-release}"
     upgrade_ems
-    cond_redirect apt-mark hold openhab openhab-addons evcc
+    cond_redirect apt-mark hold openhab openhab-addons evcc="${evccpkgversion:-0.123.9}"
     replace_logo
 
   elif [[ "$choice" == "04"* ]]; then
