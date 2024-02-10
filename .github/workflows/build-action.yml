@@ -39,12 +39,17 @@ jobs:
            sudo apt-get update
            sudo apt-get install --yes libarchive-zip-perl dos2unix systemd-container qemu-user-static qemu-utils
            echo "image32=$(basename "$(curl "https://downloads.raspberrypi.org/raspios_oldstable_lite_armhf_latest" -s -L -I  -o /dev/null -w '%{url_effective}')")" >> $GITHUB_OUTPUT
-           #echo "image64=$(basename "$(curl "https://downloads.raspberrypi.org/raspios_lite_arm64_latest" -s -L -I  -o /dev/null -w '%{url_effective}')")" >> $GITHUB_OUTPUT
+           echo "imageNeu=$(basename "$(curl "https://downloads.raspberrypi.org/raspios_lite_arm64_latest" -s -L -I  -o /dev/null -w '%{url_effective}')")" >> $GITHUB_OUTPUT
        - name: Cache Raspberry Pi OS bullseye 32bit image
          uses: actions/cache@v4
          with:
            path: ${{ steps.setup.outputs.image32 }}
            key: ${{ steps.setup.outputs.image32 }}
+       - name: Cache Raspberry Pi OS bookworm 64bit image
+         uses: actions/cache@v4
+         with:
+           path: ${{ steps.setup.outputs.imageNeu }}
+           key: ${{ steps.setup.outputs.imageNeu }}
        - name: Build storm.house images
          id: build
          run: |
@@ -57,17 +62,17 @@ jobs:
            mv openhabian-raspios32*.img.xz storm.house-32-$(date +%Y%m%d%H%M).img.xz
            mv openhabian-raspios64*.img.xz storm.house-64-$(date +%Y%m%d%H%M).img.xz
            echo "image32=$(ls storm.house-32*.img.xz)" >> $GITHUB_OUTPUT
-           echo "image64=$(ls storm.house-64*.img.xz)" >> $GITHUB_OUTPUT
+           echo "imageNeu=$(ls storm.house-64*.img.xz)" >> $GITHUB_OUTPUT
        - name: Archive storm.house 32bit image
          uses: actions/upload-artifact@v4
          with:
            name: ${{ steps.build.outputs.image32 }}
            path: ${{ steps.build.outputs.image32 }}
-       - name: Archive storm.house 64bit image
+       - name: Archive storm.house 64bit bookworm image
          uses: actions/upload-artifact@v4
          with:
-           name: ${{ steps.build.outputs.image64 }}
-           path: ${{ steps.build.outputs.image64 }}
+           name: ${{ steps.build.outputs.imageNeu }}
+           path: ${{ steps.build.outputs.imageNeu }}
        - name: Create release template
          if: ${{ success() && github.ref_type == 'tag' && startsWith(github.ref_name, 'v') }}
          uses: "marvinpinto/action-automatic-releases@latest"
@@ -79,4 +84,4 @@ jobs:
            draft: true
            files: |
              ${{ steps.build.outputs.image32 }}
-             ${{ steps.build.outputs.image64 }}
+             ${{ steps.build.outputs.imageNeu }}
