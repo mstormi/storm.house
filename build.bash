@@ -386,7 +386,7 @@ if [[ $hwPlatform == "raspios32" ]] || [[ $hwPlatform == "raspios64" ]]; then
 fi
 
 echo_process "Moving image and cleaning up... "
-shorthash="$(git log --pretty=format:'%h' -n 1)"
+#shorthash="$(git log --pretty=format:'%h' -n 1)"
 crc32checksum="$(crc32 "$imageFile")"
 destination="openhabian-${hwPlatform}-${2:-latest}-${timestamp}-crc${crc32checksum}.img"
 mv -v "$imageFile" "$destination"
@@ -396,10 +396,9 @@ echo_process "Compressing image... "
 # speedup compression, T0 will use all cores and should be supported by reasonably new versions of xz
 xz --verbose --compress --keep -9 -T0 "$destination"
 crc32checksum="$(crc32 "${destination}.xz")"
-mv "${destination}.xz" "openhabian-${hwPlatform}-${timestamp}-git${shorthash}-crc${crc32checksum}.img.xz"
-
+mv "${destination}.xz" "openhabian-${hwPlatform}-${2:-latest}-${timestamp}-crc${crc32checksum}.img.xz"
 
 echo_process "Finished! The results:"
-ls -alh "openhabian-${hwPlatform}-${timestamp}"*
+ls -alh "openhabian-${hwPlatform}-${2:-latest}"*
 
 # vim: filetype=sh
