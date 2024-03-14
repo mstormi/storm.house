@@ -46,7 +46,7 @@ jobs:
            sed -i 's|^java_opt=.*$|java_opt=17|' build-image/openhabian.conf
        - name: Set up Docker Buildx
          id: buildx
-         uses: docker/setup-buildx-action@v3.1.0
+         uses: docker/setup-buildx-action@v3.2.0
          with:
            driver-opts: network=host
        - name: Build Docker image
@@ -85,7 +85,7 @@ jobs:
            platforms: arm
        - name: Set up Docker Buildx
          id: buildx
-         uses: docker/setup-buildx-action@v3.1.0
+         uses: docker/setup-buildx-action@v3.2.0
          with:
            driver-opts: network=host
        - name: Build Docker image
@@ -124,7 +124,7 @@ jobs:
            platforms: arm64
        - name: Set up Docker Buildx
          id: buildx
-         uses: docker/setup-buildx-action@v3.1.0
+         uses: docker/setup-buildx-action@v3.2.0
          with:
            driver-opts: network=host
        - name: Build Docker image
