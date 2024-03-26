@@ -38,13 +38,13 @@ jobs:
            sudo -E bash -c set
            sudo apt-get update
            sudo apt-get install --yes libarchive-zip-perl dos2unix systemd-container qemu-user-static qemu-utils
-           echo "image32=$(basename "$(curl "https://downloads.raspberrypi.org/raspios_oldstable_lite_armhf_latest" -s -L -I  -o /dev/null -w '%{url_effective}')")" >> $GITHUB_OUTPUT
+           echo "image32old=$(basename "$(curl "https://downloads.raspberrypi.org/raspios_oldstable_lite_armhf_latest" -s -L -I  -o /dev/null -w '%{url_effective}')")" >> $GITHUB_OUTPUT
            echo "imageNeu=$(basename "$(curl "https://downloads.raspberrypi.org/raspios_lite_arm64_latest" -s -L -I  -o /dev/null -w '%{url_effective}')")" >> $GITHUB_OUTPUT
        - name: Cache Raspberry Pi OS bullseye 32bit image
          uses: actions/cache@v4
          with:
-           path: ${{ steps.setup.outputs.image32 }}
-           key: ${{ steps.setup.outputs.image32 }}
+           path: ${{ steps.setup.outputs.image32old }}
+           key: ${{ steps.setup.outputs.image32old }}
        - name: Cache Raspberry Pi OS bookworm 64bit image
          uses: actions/cache@v4
          with:
@@ -58,7 +58,7 @@ jobs:
            sed -i -e "s|ap_password:.*$|ap_password: ${{secrets.HOTSPOTPW}}|g" includes/comitup.conf
            sudo -E ./build.bash rpi oldstable
            mv openhabian-raspios32*.img.xz storm.house-$(date +%Y%m%d%H%M).img.xz
-           echo "image32=$(ls storm.house-*.img.xz)" >> $GITHUB_OUTPUT
+           echo "image32old=$(ls storm.house-*.img.xz)" >> $GITHUB_OUTPUT
            sudo -E ./build.bash rpi64 latest
            mv openhabian-raspios64*.img.xz storm.house-neu-$(date +%Y%m%d%H%M).img.xz
            echo "imageNeu=$(ls storm.house-neu*.img.xz)" >> $GITHUB_OUTPUT
