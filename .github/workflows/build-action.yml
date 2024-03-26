@@ -67,11 +67,6 @@ jobs:
          with:
            name: ${{ steps.build.outputs.image32old }}
            path: ${{ steps.build.outputs.image32old }}
-       - name: Archive openHABian 32bit Debian 12 bookworm image
-         uses: actions/upload-artifact@v4
-         with:
-           name: ${{ steps.build.outputs.image32 }}
-           path: ${{ steps.build.outputs.image32 }}
        - name: Archive storm.house 64bit bookworm image
          uses: actions/upload-artifact@v4
          with:
@@ -88,5 +83,4 @@ jobs:
            draft: true
            files: |
              ${{ steps.build.outputs.image32old }}
-             ${{ steps.build.outputs.image32 }}
              ${{ steps.build.outputs.imageNeu }}
