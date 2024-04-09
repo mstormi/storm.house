@@ -749,7 +749,7 @@ install_evcc() {
   ( echo "deb ${repotxt}"; echo "deb-src ${repotxt}" ) > $repo
   echo -n "$(timestamp) [openHABian] Installing EVCC... "
   if ! cond_redirect apt update; then echo "FAILED (update apt lists)"; return 1; fi
-  if ! cond_redirect apt install -y "evcc=${2:-0.123.9}"; then echo "FAILED (EVCC package installation)"; return 1; fi
+  if ! cond_redirect apt install -y "evcc=${2:-0.125.0}"; then echo "FAILED (EVCC package installation)"; return 1; fi
 
   mkdir "$svcdir"
   if [[ $(systemctl show -pUser evcc | cut -d= -f2) == "${username:-openhabian}" ]]; then
