@@ -8,6 +8,7 @@ on:
       - 'build-image/openhabian-installer.service'
       - 'build-image/first-boot.bash'
       - 'includes/offline-image-modifications.bash'
+      - 'build-image/openhabian.conf'
       - '.github/workflows/build-action.yml'
   pull_request:
     paths:
