@@ -107,7 +107,7 @@ if [[ -n "$UNATTENDED" ]]; then
   misc_system_settings
   add_admin_ssh_key
   java_install "${java_opt:-17}"
-  openhab_setup "${clonebranch:-openHAB}" "release" "${openhabpkgversion:-4.1.3-1}"
+  openhab_setup "${clonebranch:-openHAB}" "release" "${openhabpkgversion}"
   install_extras
   replace_logo
   import_openhab_config
@@ -124,7 +124,7 @@ if [[ -n "$UNATTENDED" ]]; then
   zram_setup
   permissions_corrections
   setup_mirror_SD "install"
-  install_evcc "install" "${evccpkgversion:-0.128.2}"; setup_evcc
+  install_evcc "install" "${evccpkgversion}"; setup_evcc
   systemctl stop openhab
   setup_pv_config pv "${invertertype:-custom}" "${inverterip:-192.168.178.100}" "${invertermodbusid:-1}"
   setup_pv_config bat "${batterytype:-keine}" "${batteryip:-192.168.178.101}" "${batterymodbusid:-3}"
