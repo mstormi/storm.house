@@ -81,7 +81,7 @@ show_main_menu() {
     repo=$(apt-cache madison openhab | head -n 1 | awk '{ print $6 }' |cut -d'/' -f1)
     cond_redirect apt-mark unhold openhab openhab-addons evcc
     if ! cond_redirect apt install -y --allow-downgrades evcc="${evccpkgversion:-0.128.2}"; then echo "FAILED (EVCC package installation)"; return 1; fi
-    openhab_setup "openHAB" "${repo:-release}" "${openhabpkgversion:-4.1.3-1}"
+    openhab_setup "openHAB" "${repo:-release}" "${openhabpkgversion:-4.2.1-1}"
     upgrade_ems
     cond_redirect apt-mark hold openhab openhab-addons evcc
     replace_logo
