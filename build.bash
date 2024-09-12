@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2016,SC1090,SC1091
 set -e
-set -x
 
 ####################################################################
 #### dummy: changed this line 22 times to force another image build
@@ -152,8 +151,7 @@ offline_install_modifications() {
     loopPrefix="$(kpartx -asv "$imageFile" | grep -oE "loop([0-9]+)" | head -n 1)"
     mount -o rw -t ext4 "/dev/mapper/${loopPrefix}p2" "$mountFolder"
     mount -o rw -t vfat "/dev/mapper/${loopPrefix}p1" "${mountFolder}/boot"
-    #systemd-nspawn --directory="$2" /opt/openhabian/build-image/offline-install-modifications.bash &> /dev/null
-    systemd-nspawn --directory="$2" /opt/openhabian/build-image/offline-install-modifications.bash 
+    systemd-nspawn --directory="$2" /opt/openhabian/build-image/offline-install-modifications.bash &> /dev/null
     sync
     df -h "$mountFolder"
     df -h "${mountFolder}/boot"
