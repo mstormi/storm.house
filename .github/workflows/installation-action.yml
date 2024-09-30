@@ -54,7 +54,7 @@ jobs:
          with:
            driver-opts: network=host
        - name: Build Docker image
-         uses: docker/build-push-action@v6.7.0
+         uses: docker/build-push-action@v6.9.0
          with:
            context: .
            file: ./tests/Dockerfile.rpi3-installation
@@ -93,7 +93,7 @@ jobs:
          with:
            driver-opts: network=host
        - name: Build Docker image
-         uses: docker/build-push-action@v6.7.0
+         uses: docker/build-push-action@v6.9.0
          with:
            context: .
            file: ./tests/Dockerfile.rpi3-64-installation
