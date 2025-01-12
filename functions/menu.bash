@@ -79,12 +79,11 @@ show_main_menu() {
       fi
     fi
     repo=$(apt-cache madison openhab | head -n 1 | awk '{ print $6 }' |cut -d'/' -f1)
-    openhab_setup "${repo:-release}" "${openhabpkgversion}"
     cond_redirect apt-mark unhold openhab openhab-addons evcc
-    openhab_setup "${repo:-release}"
+    openhab_setup "${repo:-release}" "${openhabpkgversion}"
+    replace_logo
     upgrade_ems
     cond_redirect apt-mark hold openhab openhab-addons evcc
-    replace_logo
 
   elif [[ "$choice" == "04"* ]]; then
     import_openhab_config
