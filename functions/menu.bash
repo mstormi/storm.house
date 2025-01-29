@@ -78,6 +78,8 @@ show_main_menu() {
         java_install "17"
       fi
     fi
+
+    source "$configFile"
     repo=$(apt-cache madison openhab | head -n 1 | awk '{ print $6 }' |cut -d'/' -f1)
     cond_redirect apt-mark unhold openhab openhab-addons evcc
     openhab_setup "${repo:-release}" "${openhabpkgversion}"
