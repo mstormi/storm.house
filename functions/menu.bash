@@ -79,10 +79,11 @@ show_main_menu() {
       fi
     fi
 
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC1090,SC2154
     source "$configFile"
     repo=$(apt-cache madison openhab | head -n 1 | awk '{ print $6 }' |cut -d'/' -f1)
     cond_redirect apt-mark unhold openhab openhab-addons evcc
+    # shellcheck disable=SC2154
     openhab_setup "${repo:-release}" "${openhabpkgversion}"
     replace_logo
     upgrade_ems
