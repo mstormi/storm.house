@@ -76,6 +76,7 @@ show_main_menu() {
 
     repo=$(apt-cache madison openhab | head -n 1 | awk '{ print $6 }' |cut -d'/' -f1)
     cond_redirect apt-mark unhold openhab openhab-addons evcc
+    # shellcheck disable=SC2154
     openhab_setup "${repo:-release}" "${openhabpkgversion}"
     replace_logo
     upgrade_ems
