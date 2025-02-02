@@ -79,6 +79,7 @@ show_main_menu() {
       fi
     fi
 
+    # shellcheck disable=SC2154
     source "$configFile"
     repo=$(apt-cache madison openhab | head -n 1 | awk '{ print $6 }' |cut -d'/' -f1)
     cond_redirect apt-mark unhold openhab openhab-addons evcc
@@ -236,7 +237,6 @@ show_main_menu() {
     if [ $RET -eq 1 ] || [ $RET -eq 255 ]; then return 0; fi
     wait_for_apt_to_finish_update
     version="$( (openhab4_is_installed && echo "openHAB") || (openhab3_is_installed && echo "openHAB3"))"
-    # shellcheck disable=SC2154
     case "$choice2" in
       41\ *) openhab_setup "release";;
       *openHAB\ Milestone) openhab_setup "milestone";;
