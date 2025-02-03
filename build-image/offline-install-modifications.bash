@@ -4,6 +4,7 @@
 export BASEDIR="/opt/openhabian"
 export DEBIAN_FRONTEND="noninteractive"
 export PREOFFLINE="1"
+
 debfileurl=https://davesteele.github.io/comitup/deb
 debfile=davesteele-comitup-apt-source
 debfilelatest=latest.deb
