@@ -4,7 +4,7 @@
 export BASEDIR="/opt/openhabian"
 export DEBIAN_FRONTEND="noninteractive"
 export PREOFFLINE="1"
-
+set -x
 debfileurl=https://davesteele.github.io/comitup/deb
 debfile=davesteele-comitup-apt-source
 debfilelatest=latest.deb
@@ -16,7 +16,7 @@ add_keys "https://openhab.jfrog.io/artifactory/api/gpg/key/public" "openhab"
 echo "deb [signed-by=/usr/share/keyrings/openhab.gpg] https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main" > /etc/apt/sources.list.d/openhab.list
 
 # comitup hotspot
-wget -nv "${debfileurl}/${debfile}_${debfilelatest}" -O ${debfile}_${debfilelatest} || wget -nv "${debfileurl}/${debfile}_${debfilestatic} -O ${debfile}_${debfilelatest}"
+wget -nv "${debfileurl}/${debfile}_${debfilelatest}" -O ${debfile}_${debfilelatest} || wget -nv "${debfileurl}/${debfile}_${debfilestatic}" -O ${debfile}_${debfilelatest}
 dpkg -i --force-all "${debfile}_${debfilelatest}"
 rm -f "${debfile}*.deb"
 if [[ ! -f ${comituprepofile} ]]; then
