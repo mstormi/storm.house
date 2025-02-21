@@ -47,6 +47,7 @@ system_upgrade() {
 ##
 basic_packages() {
   echo -n "$(timestamp) [openHABian] Installing basic can't-be-wrong packages (screen, vim, ...)... "
+  apt -y install --reinstall zutty
   dpkg --configure -a  # just in case to ensure apt works
 
   if cond_redirect apt-get -o DPkg::Lock::Timeout="$APTTIMEOUT" install --yes acl arping apt-utils bash-completion bzip2 coreutils \
