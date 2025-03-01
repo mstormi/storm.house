@@ -82,6 +82,7 @@ frontail_remove() {
   frontailBase="$(npm list -g | head -n 1)/node_modules/frontail"
 
   if ! dpkg --compare-versions "$(sed -n 's/openhab-distro\s*: //p' /var/lib/openhab/etc/version.properties)" gt "4.3.0"; then return 0; fi
+  # shellcheck disable=SC2154
   if [[ -z $INTERACTIVE ]] || [[ -n $frontail_remove ]]; then return 0; fi
 
 
