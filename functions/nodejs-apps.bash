@@ -9,7 +9,8 @@ nodejs_setup() {
   if node_is_installed && ! is_armv6l; then return 0; fi
 
   local keyName="nodejs"
-  local link="https://nodejs.org/dist/v18.16.1/node-v18.16.1-linux-armv7l.tar.xz"
+  local link="https://deb.nodesource.com/setup_22.x"	# use LTS version 22 unless we need anything more current
+  local repo="https://deb.nodesource.com/node_22.x"
   local myDistro
   local temp
 
@@ -22,16 +23,17 @@ nodejs_setup() {
 
   if [[ -z $PREOFFLINE ]] && is_armv6l; then
     echo -n "$(timestamp) [openHABian] Installing NodeJS... "
-    if ! cond_redirect wget -qO "$temp" "$link"; then echo "FAILED (download)"; rm -f "$temp"; return 1; fi
-    if ! cond_redirect tar -Jxf "$temp" --strip-components=1 -C /usr; then echo "FAILED (extract)"; rm -f "$temp"; return 1; fi
-    if cond_redirect rm -f "$temp"; then echo "OK"; else echo "FAILED (cleanup)"; return 1; fi
+    if ! cond_redirect curl -fsSL "$link" -o "${temp}/nodesource_setup.sh"; then echo "FAILED (download)"; rm -rf "$temp"; return 1; fi
+    if ! cond_redirect $(${temp}/nodesource_setup.sh); then echo "FAILED (download)"; rm -rf "$temp"; return 1; fi
+
+    if cond_redirect rm -rf "$temp"; then echo "OK"; else echo "FAILED (cleanup)"; return 1; fi
   else
     if [[ -z $OFFLINE ]]; then
       if ! add_keys "https://deb.nodesource.com/gpgkey/nodesource.gpg.key" "$keyName"; then return 1; fi
 
       echo -n "$(timestamp) [openHABian] Adding NodeSource repository to apt... "
-      echo "deb [signed-by=/usr/share/keyrings/${keyName}.gpg] https://deb.nodesource.com/node_18.x $myDistro main" > /etc/apt/sources.list.d/nodesource.list
-      echo "deb-src [signed-by=/usr/share/keyrings/${keyName}.gpg] https://deb.nodesource.com/node_18.x $myDistro main" >> /etc/apt/sources.list.d/nodesource.list
+      echo "deb [signed-by=/usr/share/keyrings/${keyName}.gpg] https://deb.nodesource.com/node_24.x $myDistro main" > /etc/apt/sources.list.d/nodesource.list
+      echo "deb-src [signed-by=/usr/share/keyrings/${keyName}.gpg] https://deb.nodesource.com/node_24.x $myDistro main" >> /etc/apt/sources.list.d/nodesource.list
       if [[ -n $PREOFFLINE ]]; then
         if cond_redirect apt-get --quiet update; then echo "OK"; else echo "FAILED (update apt lists)"; return 1; fi
       else
@@ -82,7 +84,6 @@ frontail_remove() {
   frontailBase="$(npm list -g | head -n 1)/node_modules/frontail"
 
   if ! dpkg --compare-versions "$(sed -n 's/openhab-distro\s*: //p' /var/lib/openhab/etc/version.properties)" gt "4.3.0"; then return 0; fi
-  # shellcheck disable=SC2154
   if [[ -z $INTERACTIVE ]] || [[ -n $frontail_remove ]]; then return 0; fi
 
 
