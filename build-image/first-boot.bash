@@ -75,6 +75,10 @@ if is_raspbian || is_raspios; then
   rm -f "/etc/sudoers.d/010_pi-nopasswd"
 fi
 
+# Wait until user exists
+echo "$(timestamp) [openHABian] Waiting for user creation..."
+tryUntil "id -u $userName >/dev/null 2>&1" 120 1
+
 echo -n "$(timestamp) [openHABian] Changing default username ... "
 # shellcheck disable=SC2154
 if [[ -z ${userName} ]] || ! id "$defaultUserAndGroup" &> /dev/null || id "$userName" &> /dev/null; then
@@ -107,18 +111,21 @@ if is_trixie || is_bookworm && is_pi; then	# attention no brackets => left-assoc
   systemctl enable --now NetworkManager
   nmcli g
   nmcli r wifi on
-  nmcli g
-  nmcli r wifi on
-  nmcli g
+  
+  # Wait until Wi-Fi scan results become available
+  echo "$(timestamp) [openHABian] Waiting for Wi-Fi scan readiness..."
+  tryUntil "nmcli -t -f SSID dev wifi | grep -q ." 10 3
+
+  # Apply Wi-Fi country code once Wi-Fi subsystem is ready
+  if [[ -n "$wifi_country" ]]; then
+    raspi-config nonint do_wifi_country "$wifi_country"
+  fi
 
   if [[ -n $wifiSSID ]]; then
     # Setup WiFi via NetworkManager
     # shellcheck source=/etc/openhabian.conf disable=SC2154
     nmcli g
     nmcli -w 30 d wifi connect "${wifiSSID}" password "${wifiPassword}" ifname wlan0
-    nmcli g
-    nmcli -w 30 d wifi connect "${wifiSSID}" password "${wifiPassword}" ifname wlan0
-    nmcli g
   fi
 elif grep -qs "up" /sys/class/net/eth0/operstate; then
   # Actually check if ethernet is working

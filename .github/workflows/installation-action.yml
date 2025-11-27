@@ -44,7 +44,7 @@ jobs:
             java_opt: 17
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Setup environment
         run: |
           sudo -E ./tests/ci-setup.bash github
