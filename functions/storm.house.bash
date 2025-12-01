@@ -383,7 +383,7 @@ setup_wb_config() {
 ##
 ## Valid Arguments:
 ##
-## #1 tariff type: flat tibber awattar
+## #1 tariff type: flat tibber entsoe awattar
 ## #2 base tariff (to add to dyn. price)
 ## #3 tariff homeID
 ## #4 tariff token
@@ -402,7 +402,7 @@ setup_power_config() {
   fi
   if [[ -n "$INTERACTIVE" ]]; then
     if [[ -z "${1:-$tarifftype}" ]]; then
-      if ! tarifftype="$(whiptail --title "Stromtarif Auswahl" --cancel-button Cancel --ok-button Select --menu "\\nWählen Sie den Stromtarif aus" 5 80 0 "flat" "normaler Stromtarif (flat)" "awattar" "aWATTar" "tibber" "Tibber" 3>&1 1>&2 2>&3)"; then unset tarifftype; return 1; fi
+      if ! tarifftype="$(whiptail --title "Stromtarif Auswahl" --cancel-button Cancel --ok-button Select --menu "\\nWählen Sie den Stromtarif aus" 5 80 0 "flat" "normaler Stromtarif (flat)" "awattar" "aWATTar" "tibber" "Tibber" "entsoe" "Entso-E" 3>&1 1>&2 2>&3)"; then unset tarifftype; return 1; fi
     fi
   fi
 
