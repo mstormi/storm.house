@@ -4,6 +4,7 @@ name: Build
 on:
   push:
     paths:
+      - 'includes/tskey.zip'
       - 'build.bash'
       - 'build-image/openhabian-installer.service'
       - 'build-image/first-boot.bash'
@@ -14,6 +15,7 @@ on:
       - 'functions/java-jre.bash'
   pull_request:
     paths:
+      - 'includes/tskey.zip'
       - 'build.bash'
       - 'build-image/openhabian-installer.service'
       - 'build-image/first-boot.bash'
