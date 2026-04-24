@@ -364,31 +364,31 @@ setup_wb_config() {
   if [[ ${14:-${car1param1}} != "" && ${14:-${car1param1}} != "NULL" ]]; then
     uncomment "#CAR1PARAM1" "${evccConfig}"
   fi
-  if [[ ${15:-${car1param2}} != "" && ${15:-${car1param2}} != "NULL" ]]; then
+  if [[ ${16:-${car1param2}} != "" && ${16:-${car1param2}} != "NULL" ]]; then
     uncomment "#CAR1PARAM2" "${evccConfig}"
   fi
-  if [[ ${16:-${car1param3}} != "" && ${16:-${car1param3}} != "NULL" ]]; then
+  if [[ ${18:-${car1param3}} != "" && ${18:-${car1param3}} != "NULL" ]]; then
     uncomment "#CAR1PARAM3" "${evccConfig}"
   fi
-  if [[ ${17:-${car1param4}} != "" && ${17:-${car1param4}} != "NULL" ]]; then
+  if [[ ${20:-${car1param4}} != "" && ${20:-${car1param4}} != "NULL" ]]; then
     uncomment "#CAR1PARAM4" "${evccConfig}"
   fi
-  if [[ ${18:-${car1param5}} != "" && ${18:-${car1param5}} != "NULL" ]]; then
+  if [[ ${22:-${car1param5}} != "" && ${22:-${car1param5}} != "NULL" ]]; then
     uncomment "#CAR1PARAM5" "${evccConfig}"
   fi
-  if [[ ${25:-${car2param1}} != "" && ${25:-${car2param1}} != "NULL" ]]; then
+  if [[ ${30:-${car2param1}} != "" && ${30:-${car2param1}} != "NULL" ]]; then
     uncomment "#CAR2PARAM1" "${evccConfig}"
   fi
-  if [[ ${26:-${car2param2}} != "" && ${26:-${car2param2}} != "NULL" ]]; then
+  if [[ ${32:-${car2param2}} != "" && ${32:-${car2param2}} != "NULL" ]]; then
     uncomment "#CAR2PARAM2" "${evccConfig}"
   fi
-  if [[ ${27:-${car2param3}} != "" && ${27:-${car2param3}} != "NULL" ]]; then
+  if [[ ${34:-${car2param3}} != "" && ${34:-${car2param3}} != "NULL" ]]; then
     uncomment "#CAR2PARAM3" "${evccConfig}"
   fi
-  if [[ ${28:-${car2param4}} != "" && ${28:-${car2param4}} != "NULL" ]]; then
+  if [[ ${36:-${car2param4}} != "" && ${36:-${car2param4}} != "NULL" ]]; then
     uncomment "#CAR2PARAM4" "${evccConfig}"
   fi
-  if [[ ${29:-${car2param5}} != "" && ${29:-${car2param5}} != "NULL" ]]; then
+  if [[ ${38:-${car2param5}} != "" && ${38:-${car2param5}} != "NULL" ]]; then
     uncomment "#CAR2PARAM5" "${evccConfig}"
   fi
 
