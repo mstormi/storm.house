@@ -673,7 +673,7 @@ upgrade_ems() {
   local temp
   local fullpkg=https://storm.house/download/initialConfig.zip
   local updateonly=https://storm.house/download/latestUpdate.zip
-  local introText="WICHTIGER HINWEIS\\n\\nWenn Sie eigene Änderungen auf der Ebene von openHAB vorgenommen haben (der \"orangene\" Teil der Benutzeroberfläche), dann gehen diese beim Update verloren.\\nIhre Einstellungen und historischen Daten bleiben erhalten.\\nWebseiten (pages) können Sie über den \"Code\"-Reiter kopieren und abspeichern und die Things und Items über die Menüoptionen unter \"Entwickler Tools\". \\nVor dem Update wird ein Backup der aktuellen Konfiguration erstellt. Sollten Sie das Upgrade rückgängig machen wollen, können Sie jederzeit über den Menüpunkt 51 die Konfiguration des EMS von vor dem Update wieder einspielen."
+  local introText="WICHTIGER HINWEIS\\n\\nWenn Sie eigene Änderungen auf der Ebene von openHAB vorgenommen haben (der \"orangene\" Teil der Benutzeroberfläche), dann gehen diese beim Update verloren.\\nIhre Einstellungen und historischen Daten bleiben erhalten.\\nWebseiten (pages), Things und Items können Sie über den \"Code\"-Reiter kopieren und als Datei im Verzeichnis /etc/openhab/yaml/ als Datei mit der Endung .yaml abspeichern, die Widgets finden Sie unter \"Entwickler Tools\". \\nVor dem Update wird ein Backup der aktuellen Konfiguration erstellt. Sollten Sie das Upgrade rückgängig machen wollen, können Sie jederzeit über den Menüpunkt 51 die Konfiguration des EMS von vor dem Update wieder einspielen."
 
   tempdir="$(mktemp -d "${TMPDIR:-/tmp}"/updatedir.XXXXX)"
   temp="$(mktemp "${tempdir:-/tmp}"/updatefile.XXXXX)"
