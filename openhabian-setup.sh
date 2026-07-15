@@ -147,8 +147,7 @@ if [[ -n "$UNATTENDED" ]]; then
   samba_setup
   nginx_setup
   clean_config_userpw
-  install_grott "install"
-  permissions_corrections
+  #install_grott "install"
   setup_mirror_SD "install"
   # shellcheck disable=SC2154
   install_evcc "install" "${evccpkgversion}"; setup_evcc
@@ -159,6 +158,7 @@ if [[ -n "$UNATTENDED" ]]; then
   setup_wb_config "${wallboxtype:-demo}" "${wallboxip:-192.168.178.200}"
   setup_power_config flat
   install_cleanup
+  permissions_corrections
   systemctl restart openhab
   finalize_setup
 else
