@@ -550,6 +550,11 @@ setup_fnn_config() {
     fnnpass=${6:-${fnnpass}}
     if [[ $fnnpass == "NULL" ]]; then fnnpass=""; fi
 
+    if [[ ${1:-${fnnactuator1}} == "NULL" ]]; then
+      rm -f "${destfile}"
+      return;
+    fi
+
     sed -e "s|%RELAY1|${1:-${fnnactuator1}}|;s|%IP1|${2:-${fnnactuator1ip}}|;s|%RELAY2|${3:-${fnnactuator2}}|;s|%IP2|${4:-${fnnactuator2ip}}|;s|%USER|${fnnuser}|;s|%PASS|${fnnpass}|" "${srcfile}" > "${destfile}"
   done
 }
