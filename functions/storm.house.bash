@@ -692,7 +692,7 @@ upgrade_ems() {
   # Abfrage ob Voll- oder Teilimport mit Warnung dass eigene Änderungen überschrieben werden
   mode=${1}
   if [[ -n "$INTERACTIVE" ]]; then
-    if ! whiptail --title "EMS komplettes Update" --yes-button "JA, DAS WILL ICH" --cancel-button "Abbrechen" --defaultno --yesno "$introText" 19 80; then echo "CANCELED"; return 1; fi
+    if ! whiptail --title "EMS komplettes Update" --yes-button "Ja, EMS-Config überschreiben" --cancel-button "Abbrechen" --defaultno --yesno "$introText" 19 80; then echo "CANCELED"; return 1; fi
     mode=full
   fi
 
