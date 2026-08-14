@@ -338,16 +338,14 @@ setup_wb_config() {
   cp "${includesDir}/EVCC/evcc.yaml-template" "$temp"
 
 
-
-  #sed -e "s|%WBTYPE|${1:-${wallboxtype:-demo}}|;s|%IP|${2:-${wallboxip:-192.168.178.200}}|;s|%MBID|${3:-${wallboxmodbusid}}|;s|%WBUSER|${4:-${wallboxuser}}|;s|%WBPASS|${5:-${wallboxpass}}|;s|%WBID|${6:-${wallboxid}}|;s|%TOKEN|${token}|;s|%CAR1TYPE|${8:-${car1type:-offline}}|;s|%CAR1NAME|${9:-${car1name:-meinEAuto1}}|;s|%CAR1VIN|${10:-${car1vin:-0000000000}}|;s|%CAR1CAPACITY|${11:-${car1capacity:-50}}|;s|%CAR1USER|${12:-${car1user:-user}}|;s|%CAR1PASS|${13:-${car1pass:-pass}}|;s|%CAR1PARAM1|${14:-${car1param1}}|;s|%CAR1PARAM2|${15:-${car1param2}}|;s|%CAR1PARAM3|${16:-${car1param3}}|;s|%CAR1PARAM4|${17:-${car1param4}}|;s|%CAR1PARAM5|${18:-${car1param5}}|;s|%CAR2TYPE|${19:-${car2type:-offline}}|;s|%CAR2NAME|${20:-${car2name:-meinEAuto2}}|;s|%CAR2VIN|${21:-${car2vin:-0000000000}}|;s|%CAR2CAPACITY|${22:-${car2capacity:-50}}|;s|%CAR2USER|${23:-${car2user:-user}}|;s|%CAR2PASS|${24:-${car2pass:-pass}}|;s|%CAR2PARAM1|${25:-${car2param1}}|;s|%CAR2PARAM2|${26:-${car2param2}}|;s|%CAR2PARAM3|${27:-${car2param3}}|;s|%CAR2PARAM4|${28:-${car2param4}}|;s|%CAR2PARAM5|${29:-${car2param5}}|;s|%GRIDCOST|${30:-${gridcost:-40}}|;s|%FEEDINCOMPENSATION|${31:-${feedincompensation:-8.2}}|;s|%CHARGEMINEXCESS|${32:-${chargeminexcess:-2000}}|;s|%CHARGEMAXGRID|${33:-${chargemaxgrid:-2000}}|" "$temp" | grep -Evi ': NULL$' > "$evccConfig"
-
   sed -e "s|%WBTYPE|${1:-${wallboxtype:-demo}}|;s|%IP|${2:-${wallboxip:-192.168.178.200}}|;s|%MBID|${3:-${wallboxmodbusid}}|;s|%WBUSER|${4:-${wallboxuser}}|;s|%WBPASS|${5:-${wallboxpass}}|;s|%WBID|${6:-${wallboxid}}|;s|%TOKEN|${token}|;s|%CAR1TYPE|${8:-${car1type:-offline}}|;s|%CAR1NAME|${9:-${car1name:-meinEAuto1}}|;s|%CAR1VIN|${10:-${car1vin:-0000000000}}|;s|%CAR1CAPACITY|${11:-${car1capacity:-50}}|;s|%CAR1USER|${12:-${car1user:-user}}|;s|%CAR1PASS|${13:-${car1pass:-pass}}|;s|%CAR1PARAM1|${14:-${car1param1}}|;s|%CAR1VALUE1|${15:-${car1value1}}|;s|%CAR1PARAM2|${16:-${car1param2}}|;s|%CAR1VALUE2|${17:-${car1value2}}|;s|%CAR1PARAM3|${18:-${car1param3}}|;s|%CAR1VALUE3|${19:-${car1value3}}|;s|%CAR1PARAM4|${20:-${car1param4}}|;s|%CAR1VALUE4|${21:-${car1value4}}|;s|%CAR1PARAM5|${22:-${car1param5}}|;s|%CAR1VALUE5|${23:-${car1value5}}|;s|%CAR2TYPE|${24:-${car2type:-offline}}|;s|%CAR2NAME|${25:-${car2name:-meinEAuto2}}|;s|%CAR2VIN|${26:-${car2vin:-0000000000}}|;s|%CAR2CAPACITY|${27:-${car2capacity:-50}}|;s|%CAR2USER|${28:-${car2user:-user}}|;s|%CAR2PASS|${29:-${car2pass:-pass}}|;s|%CAR2PARAM1|${30:-${car2param1}}|;s|%CAR2VALUE1|${31:-${car2value1}}|;s|%CAR2PARAM2|${32:-${car2param2}}|;s|%CAR2VALUE2|${33:-${car2value2}}|;s|%CAR2PARAM3|${34:-${car2param3}}|;s|%CAR2VALUE3|${35:-${car2value3}}|;s|%CAR2PARAM4|${36:-${car2param4}}|;s|%CAR2VALUE4|${37:-${car2value4}}|;s|%CAR2PARAM5|${38:-${car2param5}}|;s|%CAR2VALUE5|${39:-${car2value5}}|;s|%GRIDCOST|${40:-${gridcost:-40}}|;s|%FEEDINCOMPENSATION|${41:-${feedincompensation:-8.2}}|;s|%CHARGEMINEXCESS|${42:-${chargeminexcess:-2000}}|;s|%CHARGEMAXGRID|${43:-${chargemaxgrid:-2000}}|" "$temp" | grep -Evi ': NULL$' > "$evccConfig"
 
   rm -f "${temp}"
 
-  if ! grep -Eq "[[:space:]]certificate" "${evccConfig}"; then
-    evcc eebus-cert -c "${evccConfig}" | tail +5 >> "$evccConfig"
-  fi
+  # deprecated Befehl in evcc
+#  if ! grep -Eq "[[:space:]]certificate" "${evccConfig}"; then
+#    evcc eebus-cert -c "${evccConfig}" | tail +5 >> "$evccConfig"
+#  fi
   if [[ ${6:-${wallboxid}} != "" && ${6:-${wallboxid}} != "1234567890abcdef" ]] && [[ ${1:-${wallboxtype}} == "eebus" || ${1:-${wallboxtype}} == "elliconnect" || ${1:-${wallboxtype}} == "ellipro" ]]; then
     uncomment "#SKI" "${evccConfig}"
   fi
