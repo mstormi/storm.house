@@ -228,13 +228,13 @@ setup_whitegood_config() {
 	srcfile="${srcfile}-template"
     fi
 
-    wuser=${6:-${whitegooduser}}
+    wuser=${10:-${whitegooduser}}
     if [[ $wuser == "NULL" ]]; then wuser=""; fi
-    wpass=${7:-${whitegoodpass}}
+    wpass=${11:-${whitegoodpass}}
     if [[ $wpass == "NULL" ]]; then wpass=""; fi
 
     # wird auch für weisseWare.rules ausgeführt
-    sed -e "s|%ACTUATOR|${1:-${whitegoodactuator}}|;s|%IPW|${2:-${washingmachineip}}|;s|%IPS|${3:-${dishwasherip}}|;s|%IPK|${4:-${fridgeip}}|;s|%IPT|${5:-${freezerip}}|;s|%USER|${wuser}|;s|%PASS|${wpass}|" "${srcfile}" > "${destfile}"
+    sed -e "s|%ACTUATOR|${1:-${whitegoodactuator}}|;s|%SERIAL|${2:-${hcwasherserial}}|;s|%IPW|${3:-${washingmachineip}}|;s|%SERIAL|${4:-${hcdishwasherserial}}|;s|%IPS|${5:-${dishwasherip}}|;s|%SERIAL|${6:-${hcfridgeserial}}|;s|%IPK|${7:-${fridgeip}}|;s|%SERIAL|${8:-${hcfreezerserial}}|;s|%IPT|${9:-${freezerip}}|;s|%USER|${wuser}|;s|%PASS|${wpass}|" "${srcfile}" > "${destfile}"
   done
 }
 
