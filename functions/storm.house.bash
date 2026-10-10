@@ -213,9 +213,11 @@ setup_heatingrod() {
 
 
 setup_whitegood_config() {
+  local actuator
   local dir
   local srcfile
   local destfile
+  local type
   local wuser
   local wpass
 
@@ -223,18 +225,59 @@ setup_whitegood_config() {
   for component in things items rules; do
     dir="${OPENHAB_CONF:-/etc/openhab}/${component}/"
     srcfile="${dir}/STORE/weisseWare.${component}"
-    destfile="${dir}/weisseWare.${component}"
+    destfile="${dir}/ww.${component}"
+    rm -f "${destfile}"; touch "${destfile}"
+    
     if [[ ${1:-${whitegoodactuator}} == "custom" ]] && [[ ! -f "${srcfile}" ]]; then
 	srcfile="${srcfile}-template"
     fi
 
-    wuser=${10:-${whitegooduser}}
+    wuser=${13:-${whitegooduser}}
     if [[ $wuser == "NULL" ]]; then wuser=""; fi
-    wpass=${11:-${whitegoodpass}}
+    wpass=${14:-${whitegoodpass}}
     if [[ $wpass == "NULL" ]]; then wpass=""; fi
 
-    # wird auch für weisseWare.rules ausgeführt
-    sed -e "s|%ACTUATOR|${1:-${whitegoodactuator}}|;s|%SERIAL|${2:-${hcwasherserial}}|;s|%IPW|${3:-${washingmachineip}}|;s|%SERIAL|${4:-${hcdishwasherserial}}|;s|%IPS|${5:-${dishwasherip}}|;s|%SERIAL|${6:-${hcfridgeserial}}|;s|%IPK|${7:-${fridgeip}}|;s|%SERIAL|${8:-${hcfreezerserial}}|;s|%IPT|${9:-${freezerip}}|;s|%USER|${wuser}|;s|%PASS|${wpass}|" "${srcfile}" > "${destfile}"
+    for d in wm sm ks kt; do
+      if [[ $d == "wm" ]]; then
+	if [[ ${1:-${washertype}} == "hc" ]]; then
+          type=hc
+        else
+          type=shelly
+	  actuator=${1:-${washertype}}
+	fi
+      fi
+      if [[ $d == "sm" ]]; then
+	if [[ ${4:-${dishwashertype}} == "hc" ]]; then
+          type=hc
+        else
+          type=shelly
+	  actuator=${4:-${dishwashertype}}
+	fi
+      fi
+      if [[ $d == "ks" ]]; then
+	if [[ ${7:-${fridgetype}} == "hc" ]]; then
+          type=hc
+        else
+          type=shelly
+	  actuator=${7:-${fridgetype}}
+	fi
+      fi
+      if [[ $d == "kt" ]]; then
+        if [[ ${10:-${freezertype}} == "hc" ]]; then
+          type=hc
+        else
+          type=shelly
+	  actuator=${10:-${freezertype}}
+	fi
+      fi
+      srcfile="${OPENHAB_CONF:-/etc/openhab}/${component}/STORE/WW/${type}.${d}.${component}"
+
+      #srcfile="${OPENHAB_CONF:-/etc/openhab}/${component}/STORE/WW/${1:-${wallboxtype}}.${component}"
+
+      if [[ -f ${srcfile} ]]; then
+        sed -e "s|%ACTUATOR|${actuator}|;s|%WTYPE|${1:-${washertype}}|;s|%WSERIAL|${2:-${washerserial}}|;s|%IPW|${3:-${washingmachineip}}|;s|%DTYPE|${4:-${dishwashertype}}|;s|%DSERIAL|${5:-${dishwasherserial}}|;s|%IPS|${6:-${dishwasherip}}|;s|%KTYPE|${7:-${fridgetype}}|;s|%KSERIAL|${8:-${fridgeserial}}|;s|%IPK|${9:-${fridgeip}}|;s|%TTYPE|${10:-${freezertype}}|;s|%TSERIAL|${11:-${freezerserial}}|;s|%IPT|${12:-${freezerip}}|;s|%USER|${wuser}|;s|%PASS|${wpass}|" "${srcfile}" >> "${destfile}"
+      fi
+    done
   done
 }
 
