@@ -241,10 +241,6 @@ setup_whitegood_config() {
     destfile="${dir}/ww.${component}"
     rm -f "${destfile}"; touch "${destfile}"
     
-    if [[ ${1:-${whitegoodactuator}} == "custom" ]] && [[ ! -f "${srcfile}" ]]; then
-	srcfile="${srcfile}-template"
-    fi
-
     wuser=${13:-${whitegooduser}}
     if [[ $wuser == "NULL" ]]; then wuser=""; fi
     wpass=${14:-${whitegoodpass}}
@@ -283,7 +279,11 @@ setup_whitegood_config() {
 	  actuator=${10:-${freezertype}}
 	fi
       fi
-      srcfile="${OPENHAB_CONF:-/etc/openhab}/${component}/STORE/WW/${type}.${d}.${component}"
+      if [[ ${1:-${whitegoodactuator}} == "custom" ]] && [[ ! -f "${srcfile}" ]]; then
+	srcfile="${srcfile}-template"
+      else
+        srcfile="${OPENHAB_CONF:-/etc/openhab}/${component}/STORE/WW/${type}.${d}.${component}"
+      fi
 
       #srcfile="${OPENHAB_CONF:-/etc/openhab}/${component}/STORE/WW/${1:-${wallboxtype}}.${component}"
 
