@@ -32,6 +32,7 @@ setup_pv_config() {
   local muser
   local mpass
   local serial
+  local workfile
 
 
   if [[ -n "$UNATTENDED" ]]; then
@@ -66,36 +67,48 @@ setup_pv_config() {
       srcfile="${srcfile}-template"
     fi
     destfile="${OPENHAB_CONF:-/etc/openhab}/${configdomain}/${device}.${configdomain}"
-    if [[ ${2:-${default}} != "custom" ]]; then rm -f "$destfile"; fi
 
+    # Zieldatei erst in einer Arbeitskopie erzeugen und nur ersetzen, wenn sich der Inhalt ändert:
+    # jedes Neuschreiben einer .items/.things/.rules-Datei lässt openHAB neu laden (bei .items alle Regeln, inkl. "System started")
     if [[ -f ${srcfile} ]]; then
-      if [[ ! -f ${destfile} ]]; then
-        cp -p "${srcfile}" "${destfile}"
-      fi
-      if [[ $(whoami) == "root" ]]; then
-        chown "${username:-openhabian}:openhab" "${OPENHAB_CONF:-/etc/openhab}/${configdomain}/${device}.${configdomain}"
-        chmod 664 "${OPENHAB_CONF:-/etc/openhab}/${configdomain}/${device}.${configdomain}"
+      workfile="$(mktemp "${destfile}.XXXXXX.tmp")"
+      if [[ ${2:-${default}} == "custom" ]] && [[ -f ${destfile} ]]; then
+        cp -p "${destfile}" "${workfile}"	# custom: vorhandene (vom Benutzer angepasste) Datei beibehalten
+      else
+        cp -p "${srcfile}" "${workfile}"
       fi
 
       if [[ "${device}" == "pv" && "${2:-$invertertype}" == "huaweilogger" ]]; then
         # %HUAWEI1 bzw. 2 = 51000 + 25 * (MBID - 1) + 5 bzw 9 berechnen
         Erzeugung=$((51000 + 25 * (mbid - 1) + 5))
         PVStatus=$((Erzeugung + 4))
-        sed -i "s|%HUAWEI1|${Erzeugung}|;s|%HUAWEI2|${PVStatus}|" "${destfile}"
+        sed -i "s|%HUAWEI1|${Erzeugung}|;s|%HUAWEI2|${PVStatus}|" "${workfile}"
         mbid="${5:-${loggermodbusid}}"  # diese ID muss angesprochen werden
       fi
 
-      sed -i "s|%IP|${ip}|;s|%MBID|${mbid}|;s|%TOKEN|${authToken}|" "${destfile}"
+      sed -i "s|%IP|${ip}|;s|%MBID|${mbid}|;s|%TOKEN|${authToken}|" "${workfile}"
       if [[ "${device}" == "meter" && $# -ge 6 ]]; then
         if [[ $serial == "NULL" ]]; then serial=""; fi
         if [[ $muser == "NULL" ]]; then muser=""; fi
         if [[ $mpass == "NULL" ]]; then mpass=""; fi
-        sed -i "s|%SERIAL|${serial}|;s|%USER|${muser}|;s|%PASS|${mpass}|" "${destfile}"
+        sed -i "s|%SERIAL|${serial}|;s|%USER|${muser}|;s|%PASS|${mpass}|" "${workfile}"
       fi
 
       if [[ "${device}" == "pv" && "${default}" == "sofarsolar" ]]; then
-        sed -i "s|%IP|${ip}|;s|%MODEL|${model}|;s|%SERIAL|${serial}|" "${destfile}"
+        sed -i "s|%IP|${ip}|;s|%MODEL|${model}|;s|%SERIAL|${serial}|" "${workfile}"
       fi
+
+      if [[ -f ${destfile} ]] && cmp -s "${workfile}" "${destfile}"; then
+        rm -f "${workfile}"	# unverändert: nicht anfassen, sonst lädt openHAB neu
+      else
+        mv -f "${workfile}" "${destfile}"
+        if [[ $(whoami) == "root" ]]; then
+          chown "${username:-openhabian}:openhab" "${destfile}"
+          chmod 664 "${destfile}"
+        fi
+      fi
+    elif [[ ${2:-${default}} != "custom" ]]; then
+      rm -f "$destfile"	# keine Vorlage für diesen Typ: alte Datei entfernen
     fi
   done
 
