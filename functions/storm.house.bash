@@ -483,6 +483,8 @@ setup_power_config() {
   local temp
   local includesDir="${BASEDIR:-/opt/openhabian}/includes"
   local srcfile
+  local destfile
+  local workfile
 
 
   if [[ -n "$UNATTENDED" ]]; then
@@ -496,22 +498,32 @@ setup_power_config() {
   fi
 
   for component in things items rules; do
-    rm -f "${OPENHAB_CONF:-/etc/openhab}/${component}/netz.${component}"
     srcfile="${OPENHAB_CONF:-/etc/openhab}/${component}/STORE/tariffs/${1:-${tarifftype}}.${component}"
     destfile="${OPENHAB_CONF:-/etc/openhab}/${component}/netz.${component}"
     if [[ -f ${srcfile} ]]; then
-      cp -p "${srcfile}" "${destfile}"
-      if [[ $(whoami) == "root" ]]; then
-        chown "${username:-openhabian}:openhab" "${OPENHAB_CONF:-/etc/openhab}/${component}/netz.${component}"
-        chmod 664 "${OPENHAB_CONF:-/etc/openhab}/${component}/netz.${component}"
+      # Zieldatei erst in einer Arbeitskopie erzeugen und nur ersetzen, wenn sich der Inhalt ändert: jedes Neuschreiben lässt
+      # openHAB neu laden (bei .items alle Regeln inkl. "System started" -> Erstinitialisierung -> Tarifauswahl -> setup_power_config)
+      workfile="$(mktemp "${destfile}.XXXXXX.tmp")"
+      cp -p "${srcfile}" "${workfile}"
+      if [[ ${component} == "things" ]]; then
+        case "${1:-$tarifftype}" in
+          tibber) sed -i "s|%HOMEID|${3:-${tariffhomeid}}|;s|%TOKEN|${4:-${tarifftoken}}|" "${workfile}";;
+          awattar) sed -i "s|%BASEPRICE|${2:-${basetariff}}|" "${workfile}";;
+        esac
       fi
+      if [[ -f ${destfile} ]] && cmp -s "${workfile}" "${destfile}"; then
+        rm -f "${workfile}"	# unverändert: nicht anfassen, sonst lädt openHAB neu
+      else
+        mv -f "${workfile}" "${destfile}"
+        if [[ $(whoami) == "root" ]]; then
+          chown "${username:-openhabian}:openhab" "${destfile}"
+          chmod 664 "${destfile}"
+        fi
+      fi
+    else
+      rm -f "${destfile}"	# keine Vorlage für diesen Tarif: alte Datei entfernen
     fi
   done
-
-  case "${1:-$tarifftype}" in
-      tibber) sed -i "s|%HOMEID|${3:-${tariffhomeid}}|;s|%TOKEN|${4:-${tarifftoken}}|" "${OPENHAB_CONF:-/etc/openhab}/things/netz.things";;
-      awattar) sed -i "s|%BASEPRICE|${2:-${basetariff}}|" "${OPENHAB_CONF:-/etc/openhab}/things/netz.things";;
-  esac
   
   if [[ -n "$INTERACTIVE" ]]; then
     whiptail --title "Setup erfolgreich" --msgbox "Das Energie Management System nutzt jetzt einen ${2:-${tarifftype}} Stromtarif." 8 80
