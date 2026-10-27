@@ -212,16 +212,26 @@ setup_heatingrod() {
 
 
 ## Generate/copy openHAB config for whitegood appliances
-## valid arguments:
-## #1 Shelly actuator type (common to all white good actuators)
-## #2 IP address of washing machine actuator
-## #3 IP address of dish washer actuator
-## #4 IP address of fridge actuator
-## #5 IP address of freezer actuator
-## #6 user name to access Shelly actuators (common to all white good actuators)
-## #7 password to access Shelly actuators (common to all white good actuators)
+## valid arguments (device type: hc, keine, custom or a Shelly thing type such as shellyplugs):
+## #1 #2 #3 type, serial number, IP address of washing machine
+## #4 #5 #6 type, serial number, IP address of dish washer
+## #7 #8 #9 type, serial number, IP address of fridge
+## #10 #11 #12 type, serial number, IP address of freezer
+## #13 user name to access Shelly actuators (common to all white good actuators)
+## #14 password to access Shelly actuators (common to all white good actuators)
 ##
-##    setup_whitegood_config(String washing machine IP,String dish washer IP,String actuator user name,String actuator password)
+## ww.{things,items,rules} are created from STORE/WW/<type>.<device>.<component> for the devices wm sm ks kt:
+## hc       Home Connect
+## shelly   Shelly actuator, %ACTUATOR = Shelly thing type
+## keine    not configured (also NULL/UNDEF/empty): items without channel so rules and widgets find them, no thing
+## custom   manual configuration in STORE/WW/custom.<device>.<component>, nothing if that file does not exist
+## The fixed whitegood items are in items/weisseWare.items and not touched here.
+##
+##    setup_whitegood_config(String washer type,String washer serial,String washer IP,
+##                           String dish washer type,String dish washer serial,String dish washer IP,
+##                           String fridge type,String fridge serial,String fridge IP,
+##                           String freezer type,String freezer serial,String freezer IP,
+##                           String actuator user name,String actuator password)
 ##
 
 
@@ -230,65 +240,38 @@ setup_whitegood_config() {
   local dir
   local srcfile
   local destfile
+  local devtype
   local type
   local wuser
   local wpass
 
+  wuser=${13:-${whitegooduser}}
+  if [[ $wuser == "NULL" ]]; then wuser=""; fi
+  wpass=${14:-${whitegoodpass}}
+  if [[ $wpass == "NULL" ]]; then wpass=""; fi
 
   for component in things items rules; do
-    dir="${OPENHAB_CONF:-/etc/openhab}/${component}/"
-    srcfile="${dir}/STORE/weisseWare.${component}"
+    dir="${OPENHAB_CONF:-/etc/openhab}/${component}"
     destfile="${dir}/ww.${component}"
     rm -f "${destfile}"; touch "${destfile}"
-    
-    wuser=${13:-${whitegooduser}}
-    if [[ $wuser == "NULL" ]]; then wuser=""; fi
-    wpass=${14:-${whitegoodpass}}
-    if [[ $wpass == "NULL" ]]; then wpass=""; fi
 
     for d in wm sm ks kt; do
-      if [[ $d == "wm" ]]; then
-	if [[ ${1:-${washertype}} == "hc" ]]; then
-          type=hc
-        else
-          type=shelly
-	  actuator=${1:-${washertype}}
-	fi
-      fi
-      if [[ $d == "sm" ]]; then
-	if [[ ${4:-${dishwashertype}} == "hc" ]]; then
-          type=hc
-        else
-          type=shelly
-	  actuator=${4:-${dishwashertype}}
-	fi
-      fi
-      if [[ $d == "ks" ]]; then
-	if [[ ${7:-${fridgetype}} == "hc" ]]; then
-          type=hc
-        else
-          type=shelly
-	  actuator=${7:-${fridgetype}}
-	fi
-      fi
-      if [[ $d == "kt" ]]; then
-        if [[ ${10:-${freezertype}} == "hc" ]]; then
-          type=hc
-        else
-          type=shelly
-	  actuator=${10:-${freezertype}}
-	fi
-      fi
-      if [[ ${1:-${whitegoodactuator}} == "custom" ]] && [[ ! -f "${srcfile}" ]]; then
-	srcfile="${srcfile}-template"
-      else
-        srcfile="${OPENHAB_CONF:-/etc/openhab}/${component}/STORE/WW/${type}.${d}.${component}"
-      fi
-
-      #srcfile="${OPENHAB_CONF:-/etc/openhab}/${component}/STORE/WW/${1:-${wallboxtype}}.${component}"
+      case $d in
+        wm) devtype=${1:-${washertype}};;
+        sm) devtype=${4:-${dishwashertype}};;
+        ks) devtype=${7:-${fridgetype}};;
+        kt) devtype=${10:-${freezertype}};;
+      esac
+      actuator=""
+      case $devtype in
+        hc|custom) type=$devtype;;
+        ""|keine|NULL|UNDEF) type=keine;;
+        *) type=shelly; actuator=$devtype;;
+      esac
+      srcfile="${dir}/STORE/WW/${type}.${d}.${component}"
 
       if [[ -f ${srcfile} ]]; then
-        sed -e "s|%ACTUATOR|${actuator}|;s|%WTYPE|${1:-${washertype}}|;s|%WSERIAL|${2:-${washerserial}}|;s|%IPW|${3:-${washingmachineip}}|;s|%DTYPE|${4:-${dishwashertype}}|;s|%DSERIAL|${5:-${dishwasherserial}}|;s|%IPS|${6:-${dishwasherip}}|;s|%KTYPE|${7:-${fridgetype}}|;s|%KSERIAL|${8:-${fridgeserial}}|;s|%IPK|${9:-${fridgeip}}|;s|%TTYPE|${10:-${freezertype}}|;s|%TSERIAL|${11:-${freezerserial}}|;s|%IPT|${12:-${freezerip}}|;s|%USER|${wuser}|;s|%PASS|${wpass}|" "${srcfile}" >> "${destfile}"
+        sed -e "s|%ACTUATOR|${actuator}|;s|%WTYPE|${1:-${washertype}}|;s|%WSERIAL|${2:-${hcwasherserial}}|;s|%IPW|${3:-${washingmachineip}}|;s|%DTYPE|${4:-${dishwashertype}}|;s|%DSERIAL|${5:-${hcdishwasherserial}}|;s|%IPS|${6:-${dishwasherip}}|;s|%KTYPE|${7:-${fridgetype}}|;s|%KSERIAL|${8:-${hcfridgeserial}}|;s|%IPK|${9:-${fridgeip}}|;s|%TTYPE|${10:-${freezertype}}|;s|%TSERIAL|${11:-${hcfreezerserial}}|;s|%IPT|${12:-${freezerip}}|;s|%USER|${wuser}|;s|%PASS|${wpass}|" "${srcfile}" >> "${destfile}"
       fi
     done
   done
