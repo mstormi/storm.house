@@ -14,7 +14,7 @@
 # überschreibt defaults in openhabian.conf
 
 #openhabForcePkg=5.2.3-1
-#evccForcePkg=0.310.1		# ab 0.207.1 API Änderung, erfordert OH5.1
+#evccForcePkg=0.318.1		# ab 0.207.1 API Änderung, erfordert OH5.1
 
 
 configFile="/etc/openhabian.conf"
@@ -153,7 +153,7 @@ if [[ -n "$UNATTENDED" ]]; then
   setup_pv_config pv "${invertertype:-custom}" "${inverterip:-192.168.178.100}" "${invertermodbusid:-1}"
   setup_pv_config bat "${batterytype:-keine}" "${batteryip:-192.168.178.101}" "${batterymodbusid:-3}"
   setup_pv_config meter "${metertype:-inverter}" "${meterip:-192.168.178.102}" "${metermodbusid:-99}"
-  setup_wb_config "${wallboxtype:-demo}" "${wallboxip:-192.168.178.200}"
+  setup_wb_config "${wallboxtype:-demo-charger}" "${wallboxip:-192.168.178.200}"
   setup_power_config flat
   install_cleanup
   permissions_corrections
