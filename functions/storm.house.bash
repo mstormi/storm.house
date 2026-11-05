@@ -715,6 +715,54 @@ install_extras() {
   (echo suggestionFinderIp=false; echo suggestionFinderMdns=false; echo suggestionFinderUpnp=false) >> "${addonsCfg}"
 }
 
+## Install or remove Claude Code (Anthropic) for the default user. The storm.house support uses it to analyse
+## reported problems directly on this instance (access via tailscale VPN / admin SSH key, see add_admin_ssh_key).
+## No credentials are stored: whoever analyses logs in within the session (claude, /login) and logs out afterwards.
+## Native installer from claude.ai: installs to ~/.local/bin/claude and ~/.local/share/claude; there is no
+## 32 bit build, so armv6l/armv7l are skipped. Unattended installation is skipped with claudecode != enable.
+## Valid arguments: "install", "remove"
+##
+##    install_claude_code(String action)
+##
+install_claude_code() {
+  local userName="${username:-openhabian}"
+  local installText="Claude Code (Anthropic) wird für den Benutzer ${userName} installiert.\\nDamit kann der storm.house-Support gemeldete Fehler direkt auf dieser Instanz analysieren (Zugang über VPN/SSH).\\nEs werden keine Zugangsdaten gespeichert, die Anmeldung erfolgt erst in der jeweiligen Sitzung."
+  local removeText="Claude Code wird für den Benutzer ${userName} entfernt.\\nEinstellungen und Verlauf in ~/.claude bleiben erhalten und können bei Bedarf von Hand gelöscht werden."
+  local homeDir
+
+  if [[ $1 != "install" ]] && [[ $1 != "remove" ]]; then return 1; fi
+  if [[ $1 == "install" ]]; then
+    if [[ -n $UNATTENDED ]] && [[ ${claudecode:-enable} != "enable" ]]; then
+      echo "$(timestamp) [openHABian] Claude Code installation... SKIPPED (claudecode=${claudecode})"
+      return 0
+    fi
+    if is_armv6l || is_armv7l; then
+      echo "$(timestamp) [openHABian] Claude Code installation... SKIPPED (Claude Code gibt es nur für 64-Bit-Systeme)"
+      return 0
+    fi
+  fi
+
+  homeDir="$(getent passwd "${userName}" | cut -d: -f6)"
+  if [[ -z $homeDir ]]; then echo "$(timestamp) [openHABian] Claude Code... FAILED (Benutzer ${userName} fehlt)"; return 1; fi
+
+  if [[ $1 == "remove" ]]; then
+    if [[ -n $INTERACTIVE ]]; then
+      if (whiptail --title "Claude Code entfernen" --yes-button "Continue" --no-button "Cancel" --yesno "$removeText" 10 80); then echo "OK"; else echo "CANCELED"; return 1; fi
+    fi
+    echo -n "$(timestamp) [openHABian] Removing Claude Code for ${userName}... "
+    if rm -f "${homeDir}/.local/bin/claude" && rm -rf "${homeDir}/.local/share/claude"; then echo "OK"; else echo "FAILED (rm)"; return 1; fi
+    return 0
+  fi
+
+  if [[ -n $INTERACTIVE ]]; then
+    if (whiptail --title "Claude Code installieren" --yes-button "Continue" --no-button "Cancel" --yesno "$installText" 11 80); then echo "OK"; else echo "CANCELED"; return 1; fi
+  fi
+  echo -n "$(timestamp) [openHABian] Installing Claude Code for ${userName}... "
+  # pipefail: sonst gäbe bash bei fehlgeschlagenem Download (leere Eingabe) 0 zurück
+  if ! cond_redirect sudo -u "${userName}" -H bash -c 'set -o pipefail; curl -fsSL https://claude.ai/install.sh | bash'; then echo "FAILED (claude.ai/install.sh)"; return 1; fi
+  if cond_redirect sudo -u "${userName}" -H "${homeDir}/.local/bin/claude" --version; then echo "OK"; else echo "FAILED (claude --version)"; return 1; fi
+}
+
 
 ## Retrieve latest EMS code from website
 ##

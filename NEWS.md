@@ -3,6 +3,13 @@ PGUP/PGDN. All announcements are stored in `/opt/openhabian/docs/CHANGELOG.md`
 for you to lookup.
 
 
+## Fehleranalyse mit Claude Code ## November 2026
+Neue Installationen enthalten Claude Code (Anthropic) für den Standardbenutzer. Melden Sie einen
+Fehler, kann der storm.house-Support ihn damit direkt auf Ihrer Instanz analysieren (Zugang über
+VPN/SSH wie bisher). Es werden keine Zugangsdaten gespeichert; die Anmeldung erfolgt erst in der
+jeweiligen Sitzung. Abschalten vor der Installation mit `claudecode=disable` in openhabian.conf,
+nachträglich installieren oder entfernen in openhabian-config unter 20 | Optional Components → 2G.
+
 ## Börsenpreise ## 15. Oktober 2025
 Zum Oktober wurden die Börsenpreise auf 15-minütige Abrechnung umgestellt.
 

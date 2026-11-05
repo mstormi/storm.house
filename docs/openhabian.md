@@ -253,6 +253,7 @@ Each of these are included as a part of `openhabian-config` menu option 20.
 The ESPHome configuration files are secured by the openHABbian backup function. <br/>
 **Please note that automatic updates are not implemented in OpenHABian. <br/> &rarr; to do this, use the openhbaian-config update function in menu 20**
 -   Grott Proxy server for [Growatt binding](https://www.openhab.org/addons/bindings/growatt/#grott-application-installation-and-setup)
+-   [Claude Code](https://claude.com/claude-code) - lets storm.house support analyse reported problems directly on the instance (menu 2G). Installed by default for the user configured by `username` (64 bit systems only), see `claudecode` below. No credentials are stored; whoever analyses logs in within the session.
 
 ## First boot configuration
 
@@ -300,6 +301,17 @@ Download a public SSH key from a given URL and authorize the owner of the key to
 ::: details Example
 ```
 adminkeyurl="https://example.com/mysshkey.pub"
+```
+:::
+
+#### `claudecode`
+
+Install Claude Code for the user configured by `username` during the unattended installation (`enable`, default) or not (`disable`).
+Support uses it to analyse reported problems on the instance (access via VPN/SSH, see `adminkeyurl`). Do not put any credentials here, the login happens within the session.
+
+::: details Example
+```
+claudecode=disable
 ```
 :::
 
