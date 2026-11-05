@@ -147,6 +147,7 @@ if [[ -n "$UNATTENDED" ]]; then
   clean_config_userpw
   #install_grott "install"
   setup_mirror_SD "install"
+  install_claude_code "install" || true      # Fehleranalyse durch den Support; ein Fehlschlag bricht die Installation nicht ab
   # shellcheck disable=SC2154
   install_evcc "install" "${evccpkgversion}"; setup_evcc
   systemctl stop openhab

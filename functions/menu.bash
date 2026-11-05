@@ -128,6 +128,8 @@ show_main_menu() {
     "   | Remove ESPHome "        "Uninstall ESPHome Device Builder" \
     "2F | Install Grott"          "Install Grott Proxy server (for Growatt binding)" \
     "   | Remove Grott"           "Uninstall Grott Proxy server (for Growatt binding)" \
+    "2G | Install Claude Code"    "Claude Code for problem analysis by storm.house support" \
+    "   | Remove Claude Code"     "Uninstall Claude Code" \
     3>&1 1>&2 2>&3)
     RET=$?
     if [ $RET -eq 1 ] || [ $RET -eq 255 ]; then return 0; fi
@@ -157,6 +159,8 @@ show_main_menu() {
       *Remove\ ESPHome*) setup_esphome_device_builder "remove";;
       2F\ *) install_grott "install";;
       *Remove\ Grott*) install_grott "remove";;
+      2G\ *) install_claude_code "install";;
+      *Remove\ Claude\ Code*) install_claude_code "remove";;
       "") return 0 ;;
       *) whiptail --msgbox "An unsupported option was selected (probably a programming error):\\n  \"$choice2\"" 8 80 ;;
     esac
