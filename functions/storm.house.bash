@@ -675,6 +675,14 @@ replace_logo() {
   done
   if ! cond_redirect zip -r "$JAR" app; then echo "FAILED (replace logo)"; fi
   rm -rf app
+  # The UI server prefers precompressed copies (.br/.gz) of a file if present: they would still contain the old logo,
+  # so remove the precompressed copies of the replaced logos from the JAR (none exist in 5.3, but e.g. favicon.svg has them)
+  local precompressed
+  precompressed="$(unzip -Z1 "$JAR" | grep -E '^app/(images|assets)/openhab-logo[^/]*\.svg\.(gz|br)$')"
+  if [[ -n $precompressed ]]; then
+    # shellcheck disable=SC2086
+    if ! cond_redirect zip -d "$JAR" $precompressed; then echo "FAILED (remove precompressed logos)"; fi
+  fi
 }
 
 
