@@ -536,6 +536,9 @@ setup_hp_config() {
   local srcfile
   local muser
   local mpass
+  local typ="${1:-${heatpumptype}}"
+  local conf="${OPENHAB_CONF:-/etc/openhab}"
+  local destfile
 
 
   if [[ -n "$UNATTENDED" ]]; then
@@ -543,15 +546,22 @@ setup_hp_config() {
     if [[ -z "${1:-$heatpumptype}" ]]; then echo "SKIPPED (no heat pump model defined)"; return 1; fi
   fi
 
+  # die Auswahl im UI heißt luxtronic-alt, die Vorlage luxtronik-alt
+  if [[ $typ == "luxtronic-alt" ]]; then typ="luxtronik-alt"; fi
+
   for component in things items rules; do
-    rm -f "${OPENHAB_CONF:-/etc/openhab}/${component}/heizung.${component}"
-    srcfile="${OPENHAB_CONF:-/etc/openhab}/${component}/STORE/wp/${1:-${heatpumptype}}.${component}"
-    destfile="${OPENHAB_CONF:-/etc/openhab}/${component}/heizung.${component}"
-    if [[ -f ${srcfile} ]]; then
-      cp -p "${srcfile}" "${destfile}"
+    destfile="${conf}/${component}/heizung.${component}"
+    srcfile="${conf}/${component}/STORE/wp/${typ}.${component}"
+    # luxtronik-alt hat nur eine eigene things-Vorlage (anderer Port), Items und Regeln sind die von luxtronik
+    if ! [[ -f $srcfile ]] && [[ $typ == "luxtronik-alt" ]]; then
+      srcfile="${conf}/${component}/STORE/wp/luxtronik.${component}"
+    fi
+    rm -f "$destfile"
+    if [[ -f $srcfile ]]; then
+      cp -p "$srcfile" "$destfile"
       if [[ $(whoami) == "root" ]]; then
-        chown "${username:-openhabian}:openhab" "${OPENHAB_CONF:-/etc/openhab}/${component}/heizung.${component}"
-        chmod 664 "${OPENHAB_CONF:-/etc/openhab}/${component}/heizung.${component}"
+        chown "${username:-openhabian}:openhab" "$destfile"
+        chmod 664 "$destfile"
       fi
     fi
   done
@@ -560,8 +570,14 @@ setup_hp_config() {
   if [[ $muser == "NULL" ]]; then muser=""; fi
   mpass=${7:-${heatpumppass}}
   if [[ $mpass == "NULL" ]]; then mpass=""; fi
-  sed -i "s|%IP|${2:-${heatpumpip}}|;s|%PORT|${3:-${heatpumpport:-8889}}|;s|%MBID|${4:-${heatpumpmodbusid:-1}}|;s|%RELAY|${5:-${sgractuator:-shelly25-relay}}|;s|%USER|${muser}|;s|%PASS|${mpass}|" "${OPENHAB_CONF:-/etc/openhab}/things/heizung.things"
-  sed -i "s|%RELAY|${5:-${sgractuator:-shelly25-relay}}|" "${OPENHAB_CONF:-/etc/openhab}/items/heizung.items"
+  # nicht jeder Typ hat jede Vorlage (keine: nur items, custom: keine things): nur ersetzen, was installiert wurde
+  if [[ -f "${conf}/things/heizung.things" ]]; then
+    sed -i "s|%IP|${2:-${heatpumpip}}|;s|%PORT|${3:-${heatpumpport:-8889}}|;s|%MBID|${4:-${heatpumpmodbusid:-1}}|;s|%RELAY|${5:-${sgractuator:-shelly25-relay}}|;s|%USER|${muser}|;s|%PASS|${mpass}|" "${conf}/things/heizung.things"
+  fi
+  if [[ -f "${conf}/items/heizung.items" ]]; then
+    sed -i "s|%RELAY|${5:-${sgractuator:-shelly25-relay}}|" "${conf}/items/heizung.items"
+  fi
+  return 0
 }
 
 
