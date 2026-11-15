@@ -556,6 +556,10 @@ setup_hp_config() {
     if ! [[ -f $srcfile ]] && [[ $typ == "luxtronik-alt" ]]; then
       srcfile="${conf}/${component}/STORE/wp/luxtronik.${component}"
     fi
+    # custom: ohne eigene Datei des Benutzers die mitgelieferte Vorlage verwenden (wie bei pv, wb und FNN)
+    if ! [[ -f $srcfile ]] && [[ $typ == "custom" ]]; then
+      srcfile="${srcfile}-template"
+    fi
     rm -f "$destfile"
     if [[ -f $srcfile ]]; then
       cp -p "$srcfile" "$destfile"
@@ -570,7 +574,7 @@ setup_hp_config() {
   if [[ $muser == "NULL" ]]; then muser=""; fi
   mpass=${7:-${heatpumppass}}
   if [[ $mpass == "NULL" ]]; then mpass=""; fi
-  # nicht jeder Typ hat jede Vorlage (keine: nur items, custom: keine things): nur ersetzen, was installiert wurde
+  # nicht jeder Typ hat jede Vorlage (z. B. keine: nur items): nur ersetzen, was installiert wurde
   if [[ -f "${conf}/things/heizung.things" ]]; then
     sed -i "s|%IP|${2:-${heatpumpip}}|;s|%PORT|${3:-${heatpumpport:-8889}}|;s|%MBID|${4:-${heatpumpmodbusid:-1}}|;s|%RELAY|${5:-${sgractuator:-shelly25-relay}}|;s|%USER|${muser}|;s|%PASS|${mpass}|" "${conf}/things/heizung.things"
   fi
