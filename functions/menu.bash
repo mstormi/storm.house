@@ -38,7 +38,7 @@ show_news() {
     whiptail --title "storm.house announcements" --msgbox "No announcements found (${newsFile})." 8 80
     return 0
   fi
-  whiptail --title "storm.house announcements" --scrolltext --msgbox "$(cat "$newsFile")" 20 84
+  whiptail --title "storm.house announcements" --scrolltext --msgbox "$(cat "$newsFile")" 20 116
   return 0
 }
 
