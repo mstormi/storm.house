@@ -539,6 +539,7 @@ setup_hp_config() {
   local typ="${1:-${heatpumptype}}"
   local conf="${OPENHAB_CONF:-/etc/openhab}"
   local destfile
+  local tmpfile
 
 
   if [[ -n "$UNATTENDED" ]]; then
@@ -549,8 +550,18 @@ setup_hp_config() {
   # die Auswahl im UI heißt luxtronic-alt, die Vorlage luxtronik-alt
   if [[ $typ == "luxtronic-alt" ]]; then typ="luxtronik-alt"; fi
 
+  muser=${6:-${heatpumpuser}}
+  if [[ $muser == "NULL" ]]; then muser=""; fi
+  mpass=${7:-${heatpumppass}}
+  if [[ $mpass == "NULL" ]]; then mpass=""; fi
+
+  # Jede Datei erst fertig aufbauen und nur bei geändertem Inhalt in einem Schritt ersetzen: löschen, kopieren und sed auf
+  # der Zieldatei ließ openHAB sie bei jedem Aufruf (auch nur IP, Port, Modbus-ID, Relais geändert) mehrfach laden und nach
+  # jeder Änderung der Items alle Regeln neu aufbauen. Lädt openHAB währenddessen eine andere Regeldatei, kann das
+  # scheitern ("is either empty or cannot be parsed correctly"), ihre Regeln fehlen dann bis zum nächsten Speichern.
   for component in things items rules; do
     destfile="${conf}/${component}/heizung.${component}"
+    tmpfile="${conf}/${component}/.heizung.${component}.new"	# die Endung "new" lädt openHAB nicht
     srcfile="${conf}/${component}/STORE/wp/${typ}.${component}"
     # luxtronik-alt hat nur eine eigene things-Vorlage (anderer Port), Items und Regeln sind die von luxtronik
     if ! [[ -f $srcfile ]] && [[ $typ == "luxtronik-alt" ]]; then
@@ -560,27 +571,26 @@ setup_hp_config() {
     if ! [[ -f $srcfile ]] && [[ $typ == "custom" ]]; then
       srcfile="${srcfile}-template"
     fi
-    rm -f "$destfile"
-    if [[ -f $srcfile ]]; then
-      cp -p "$srcfile" "$destfile"
-      if [[ $(whoami) == "root" ]]; then
-        chown "${username:-openhabian}:openhab" "$destfile"
-        chmod 664 "$destfile"
-      fi
+    # nicht jeder Typ hat jede Vorlage (z. B. keine: nur items): ohne Vorlage die Datei des vorherigen Typs entfernen
+    if ! [[ -f $srcfile ]]; then
+      rm -f "$destfile"
+      continue
     fi
+    if ! cp -p "$srcfile" "$tmpfile"; then return 1; fi
+    case "$component" in
+      things) sed -i "s|%IP|${2:-${heatpumpip}}|;s|%PORT|${3:-${heatpumpport:-8889}}|;s|%MBID|${4:-${heatpumpmodbusid:-1}}|;s|%RELAY|${5:-${sgractuator:-shelly25-relay}}|;s|%USER|${muser}|;s|%PASS|${mpass}|" "$tmpfile";;
+      items) sed -i "s|%RELAY|${5:-${sgractuator:-shelly25-relay}}|" "$tmpfile";;
+    esac
+    if cmp -s "$tmpfile" "$destfile"; then
+      rm -f "$tmpfile"
+      continue
+    fi
+    if [[ $(whoami) == "root" ]]; then
+      chown "${username:-openhabian}:openhab" "$tmpfile"
+      chmod 664 "$tmpfile"
+    fi
+    mv -f "$tmpfile" "$destfile"
   done
-
-  muser=${6:-${heatpumpuser}}
-  if [[ $muser == "NULL" ]]; then muser=""; fi
-  mpass=${7:-${heatpumppass}}
-  if [[ $mpass == "NULL" ]]; then mpass=""; fi
-  # nicht jeder Typ hat jede Vorlage (z. B. keine: nur items): nur ersetzen, was installiert wurde
-  if [[ -f "${conf}/things/heizung.things" ]]; then
-    sed -i "s|%IP|${2:-${heatpumpip}}|;s|%PORT|${3:-${heatpumpport:-8889}}|;s|%MBID|${4:-${heatpumpmodbusid:-1}}|;s|%RELAY|${5:-${sgractuator:-shelly25-relay}}|;s|%USER|${muser}|;s|%PASS|${mpass}|" "${conf}/things/heizung.things"
-  fi
-  if [[ -f "${conf}/items/heizung.items" ]]; then
-    sed -i "s|%RELAY|${5:-${sgractuator:-shelly25-relay}}|" "${conf}/items/heizung.items"
-  fi
   return 0
 }
 
