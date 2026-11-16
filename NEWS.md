@@ -1,6 +1,6 @@
 Hit tab to unselect buttons and scroll through the text using UP/DOWN or
-PGUP/PGDN. All announcements are stored in `/opt/openhabian/docs/CHANGELOG.md`
-for you to lookup.
+PGUP/PGDN. You can read these announcements again at any time in the main menu
+under 01 | Show news.
 
 
 ## Intelligentere Batteriesteuerung ## November 2026
