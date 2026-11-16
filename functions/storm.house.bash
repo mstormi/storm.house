@@ -631,23 +631,46 @@ setup_fnn_config() {
 }
 
 
-## setup OH config for solar forecast
+## setup OH config for solar forecast (solarforecast binding, forecast.solar)
+## generates things/forecastsolar.things from things/STORE/forecastsolar.things,
+## called by the EMS rule GK-24 whenever one of the parameters changes
 ##
 ## Valid Arguments:
 ##
-## #1 azimuth
-## #2 declination
-## #3 kWp
+## #1 latitude
+## #2 longitude
+## #3 declination (degrees, without unit)
+## #4 azimuth (degrees, 0 = south, without unit)
+## #5 kWp (decimal point, without unit)
+## #6 horizon (comma separated degrees from north, at least 12 values, or empty)
 ##
-##    setup_forecastsolar()
+##    setup_forecastsolar(String lat, String lon, String declination, String azimuth, String kwp, String horizon)
 ##
 setup_forecastsolar() {
   local thing=forecastsolar.things
-  local dir="${OPENHAB_CONF:-/etc/openhab}/things/"
-  local srcfile="${dir}/STORE/vorhersage/${thing}"
+  local dir="${OPENHAB_CONF:-/etc/openhab}/things"
+  local srcfile="${dir}/STORE/${thing}"
+  local destfile="${dir}/${thing}"
+  local workfile
+  local horizon="${6// /}"
 
+  if [[ $# -lt 5 ]]; then echo "FAILED (setup_forecastsolar: need lat lon declination azimuth kwp [horizon])"; return 1; fi
+  if ! [[ -f ${srcfile} ]]; then echo "FAILED (setup_forecastsolar: ${srcfile} missing)"; return 1; fi
+  if [[ $horizon == "NULL" ]]; then horizon=""; fi
 
-  sed -i "s|azimuth=.*|azimuth=${1:-${azimuth}},|;s|declination=.*|declination=${2:-${declination}},|;s|kwp=.*|kwp=${3:-${kwp}}|" "${destfile}"
+  workfile="$(mktemp "${dir}/.${thing}.XXXXXX")" || return 1
+  sed -e "s|%LAT|${1}|;s|%LON|${2}|;s|%DECLINATION|${3}|;s|%AZIMUTH|${4}|;s|%KWP|${5}|;s|%HORIZON|${horizon}|" "${srcfile}" > "${workfile}"
+  if [[ -f ${destfile} ]] && cmp -s "${workfile}" "${destfile}"; then
+    rm -f "${workfile}"	# unchanged: do not touch, else openHAB reloads the thing (and fetches forecast.solar again)
+    echo "unchanged"
+  else
+    chmod 664 "${workfile}"
+    mv -f "${workfile}" "${destfile}"
+    if [[ $(whoami) == "root" ]]; then
+      chown "${username:-openhabian}:openhab" "${destfile}"
+    fi
+    echo "written"
+  fi
 }
 
 
@@ -658,7 +681,7 @@ setup_forecastsolar() {
 ## #1 bot token
 ## #2 chat ID(s)
 ##
-##    setup_forecastsolar()
+##    setup_telegram()
 ##
 setup_telegram() {
   local thing=telegram.things
