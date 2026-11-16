@@ -26,12 +26,29 @@ Menu 50 provides options to backup and restore either your openHAB configuration
   fi
 }
 
+## Shows the announcements (NEWS.md) on request, also after "Stop displaying" was
+## selected at startup (openhabian_announcements only shows them again when they change).
+##
+##    show_news()
+##
+show_news() {
+  local newsFile="${BASEDIR:-/opt/openhabian}/NEWS.md"
+
+  if ! [[ -f $newsFile ]]; then
+    whiptail --title "storm.house announcements" --msgbox "No announcements found (${newsFile})." 8 80
+    return 0
+  fi
+  whiptail --title "storm.house announcements" --scrolltext --msgbox "$(cat "$newsFile")" 20 84
+  return 0
+}
+
 show_main_menu() {
   local choice
   local version
 
   choice=$(whiptail --title "storm.house Configuration Tool $(get_git_revision)" --menu "Setup Options" 20 116 13 --cancel-button Exit --ok-button Execute \
   "00 | About smart-house"       "Information about this tool ($(basename "$0"))" \
+  "01 | Show news"               "Read the storm.house announcements again" \
   "" "" \
   "02 | Upgrade System"          "Update storm.house EMS to latest version" \
   "03 | Update EMS"              "Install or upgrade to latest openHAB" \
@@ -56,7 +73,7 @@ show_main_menu() {
     show_about
 
   elif [[ "$choice" == "01"* ]]; then
-    openhabian_update
+    show_news
 
   elif [[ "$choice" == "02"* ]]; then
     wait_for_apt_to_finish_update
