@@ -122,7 +122,13 @@ openhab_setup() {
   cond_redirect usermod -aG "$gid" "$username" &> /dev/null
 
   replace_logo
-  
+
+  # The package ships org.apache.karaf.shell.cfg with sshHost = 127.0.0.1 and is not a conffile, so every install,
+  # upgrade or downgrade resets it. Bind the console to all interfaces again as install_extras does on first install.
+  if [[ -f "${OPENHAB_USERDATA:-/var/lib/openhab}/etc/org.apache.karaf.shell.cfg" ]]; then
+    if ! cond_redirect sed -i -e 's|^sshHost = .*$|sshHost = 0.0.0.0|g' "${OPENHAB_USERDATA:-/var/lib/openhab}/etc/org.apache.karaf.shell.cfg"; then echo "FAILED (sshHost in shell.cfg)"; fi
+  fi
+
   echo -n "$(timestamp) [openHABian] Setting up openHAB service... "
   if ! cond_redirect zram_dependency install ${ohPkgName}; then return 1; fi
   if ! cond_redirect systemctl -q daemon-reload; then echo "FAILED (reload)"; return 1; fi
