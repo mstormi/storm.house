@@ -50,8 +50,8 @@ show_main_menu() {
   "00 | About smart-house"       "Information about this tool ($(basename "$0"))" \
   "01 | Show news"               "Read the storm.house announcements again" \
   "" "" \
-  "02 | Upgrade System"          "Update storm.house EMS to latest version" \
-  "03 | Update EMS"              "Install or upgrade to latest openHAB" \
+  "02 | Upgrade System"          "Upgrade the OS and all applications to the latest versions" \
+  "03 | Update EMS"              "Update storm.house EMS and openHAB to the latest version" \
   "04 | Import config"           "Import an openHAB configuration from file or URL" \
   "" "" \
   "10 | Apply Improvements"      "Apply the latest improvements to the basic setup ►" \
