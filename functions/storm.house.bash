@@ -777,7 +777,7 @@ install_extras() {
 ##
 install_claude_code() {
   local userName="${username:-openhabian}"
-  local installText="Claude Code (Anthropic) wird für den Benutzer ${userName} installiert.\\nDamit kann der storm.house-Support gemeldete Fehler direkt auf dieser Instanz analysieren (Zugang über VPN/SSH).\\nEs werden keine Zugangsdaten gespeichert, die Anmeldung erfolgt erst in der jeweiligen Sitzung."
+  local installText="Claude Code (Anthropic) wird für den Benutzer ${userName} installiert.\\nDamit können Sie sich in natürlicher Sprache mit Claude über Ihr System unterhalten: Lassen Sie sich die Funktionsweise des EMS erklären und beobachtetes Verhalten analysieren, z. B. wenn die Heizungs- oder Batteriesteuerung nicht wie erwartet arbeitet. Auch der storm.house-Support kann damit Ihre Instanz analysieren (Zugang über VPN/SSH).\\n\\nStart: per SSH als ${userName} anmelden und claude aufrufen. Nötig ist ein eigenes Anthropic-Konto (Claude-Abo wie Pro oder API-Zugang).\\nEs werden keine Zugangsdaten gespeichert, die Anmeldung erfolgt erst in der jeweiligen Sitzung."
   local removeText="Claude Code wird für den Benutzer ${userName} entfernt.\\nEinstellungen und Verlauf in ~/.claude bleiben erhalten und können bei Bedarf von Hand gelöscht werden."
   local homeDir
 
@@ -806,7 +806,7 @@ install_claude_code() {
   fi
 
   if [[ -n $INTERACTIVE ]]; then
-    if (whiptail --title "Claude Code installieren" --yes-button "Continue" --no-button "Cancel" --yesno "$installText" 11 80); then echo "OK"; else echo "CANCELED"; return 1; fi
+    if (whiptail --title "Claude Code installieren" --yes-button "Continue" --no-button "Cancel" --yesno "$installText" 18 80); then echo "OK"; else echo "CANCELED"; return 1; fi
   fi
   echo -n "$(timestamp) [openHABian] Installing Claude Code for ${userName}... "
   # pipefail: sonst gäbe bash bei fehlgeschlagenem Download (leere Eingabe) 0 zurück
