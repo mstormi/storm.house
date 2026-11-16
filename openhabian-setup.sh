@@ -13,7 +13,7 @@
 # für storm.house immer diese package-Versionen installieren
 # überschreibt defaults in openhabian.conf
 
-openhabForcePkg=5.2.3-1
+openhabForcePkg=5.2.4-1
 evccForcePkg=0.318.1
 
 
