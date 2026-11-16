@@ -36,7 +36,9 @@ Basis-System aktualisiert auf openHAB 5.2.3 und evcc 0.318.1.
 Neue Installationen enthalten Claude Code (Anthropic) für den Standardbenutzer. Damit können Sie
 sich in natürlicher Sprache mit Claude über Ihr System unterhalten: Lassen Sie sich erklären, wie
 das EMS arbeitet, und analysieren, warum es sich gerade so verhält, zum Beispiel wenn die Heizungs-
-oder Batteriesteuerung nicht tut, was Sie erwarten. Auch der storm.house-Support kann damit Ihre
+oder Batteriesteuerung nicht tut, was Sie erwarten. Melden Sie sich dazu per SSH als
+Standardbenutzer an und starten Sie `claude`. Sie brauchen ein eigenes Konto bei Anthropic, also
+ein Claude-Abo (z. B. Pro) oder einen API-Zugang. Auch der storm.house-Support kann damit Ihre
 Instanz direkt analysieren (Zugang über VPN/SSH wie bisher). Es werden keine Zugangsdaten
 gespeichert; die Anmeldung erfolgt erst in der jeweiligen Sitzung. Abschalten vor der Installation
 mit `claudecode=disable` in openhabian.conf, nachträglich installieren oder entfernen in
