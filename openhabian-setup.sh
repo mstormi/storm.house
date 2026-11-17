@@ -151,9 +151,9 @@ if [[ -n "$UNATTENDED" ]]; then
   # shellcheck disable=SC2154
   install_evcc "install" "${evccpkgversion}"; setup_evcc
   systemctl stop openhab
-  setup_pv_config pv "${invertertype:-custom}" "${inverterip:-192.168.178.100}" "${invertermodbusid:-1}"
+  setup_pv_config pv "${invertertype:-keine}" "${inverterip:-192.168.178.100}" "${invertermodbusid:-1}"
   setup_pv_config bat "${batterytype:-keine}" "${batteryip:-192.168.178.101}" "${batterymodbusid:-3}"
-  setup_pv_config meter "${metertype:-inverter}" "${meterip:-192.168.178.102}" "${metermodbusid:-99}"
+  setup_pv_config meter "${metertype:-kein}" "${meterip:-192.168.178.102}" "${metermodbusid:-99}"
   setup_wb_config "${wallboxtype:-demo-charger}" "${wallboxip:-192.168.178.200}"
   setup_power_config flat
   install_cleanup
