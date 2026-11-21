@@ -653,8 +653,13 @@ setup_fnn_config() {
 ## #4 azimuth (degrees, 0 = south, without unit)
 ## #5 kWp (decimal point, without unit)
 ## #6 horizon (comma separated degrees from north, at least 12 values, or empty)
+## #7-#9 optional 2nd plane: declination, azimuth, kWp (kWp empty or 0 = no 2nd plane)
+## #10-#12 optional 3rd plane: declination, azimuth, kWp (kWp empty or 0 = no 3rd plane)
+## #5 is the kWp of plane 1 only. The template marks the blocks of planes 2/3 with the lines //%FLAECHEn and
+## //%FLAECHEn-ENDE: an unused plane's block is removed, otherwise only the marker lines.
 ##
-##    setup_forecastsolar(String lat, String lon, String declination, String azimuth, String kwp, String horizon)
+##    setup_forecastsolar(String lat, String lon, String declination, String azimuth, String kwp, String horizon
+##                        [, String declination2, String azimuth2, String kwp2 [, String declination3, String azimuth3, String kwp3]])
 ##
 setup_forecastsolar() {
   local thing=forecastsolar.things
@@ -664,12 +669,25 @@ setup_forecastsolar() {
   local workfile
   local horizon="${6// /}"
 
-  if [[ $# -lt 5 ]]; then echo "FAILED (setup_forecastsolar: need lat lon declination azimuth kwp [horizon])"; return 1; fi
+  if [[ $# -lt 5 ]]; then echo "FAILED (setup_forecastsolar: need lat lon declination azimuth kwp [horizon [dec2 az2 kwp2 [dec3 az3 kwp3]]])"; return 1; fi
   if ! [[ -f ${srcfile} ]]; then echo "FAILED (setup_forecastsolar: ${srcfile} missing)"; return 1; fi
   if [[ $horizon == "NULL" ]]; then horizon=""; fi
 
+  # planes 2 and 3: substitute the numbered placeholders BEFORE the plain ones (%AZIMUTH would also match %AZIMUTH2)
+  local -a sedargs=()
+  local n dec az kwp
+  for n in 2 3; do
+    if [[ $n == 2 ]]; then dec="${7}"; az="${8}"; kwp="${9}"; else dec="${10}"; az="${11}"; kwp="${12}"; fi
+    if [[ -n $kwp && $kwp != "NULL" ]] && awk -v k="$kwp" 'BEGIN { exit !(k + 0 > 0) }'; then
+      if [[ -z $dec || -z $az ]]; then echo "FAILED (setup_forecastsolar: plane ${n} needs declination and azimuth)"; return 1; fi
+      sedargs+=(-e "/^\/\/%FLAECHE${n}\(-ENDE\)\?\r\?$/d" -e "s|%DECLINATION${n}|${dec}|;s|%AZIMUTH${n}|${az}|;s|%KWP${n}|${kwp}|")
+    else
+      sedargs+=(-e "/^\/\/%FLAECHE${n}\r\?$/,/^\/\/%FLAECHE${n}-ENDE\r\?$/d")
+    fi
+  done
+
   workfile="$(mktemp "${dir}/.${thing}.XXXXXX")" || return 1
-  sed -e "s|%LAT|${1}|;s|%LON|${2}|;s|%DECLINATION|${3}|;s|%AZIMUTH|${4}|;s|%KWP|${5}|;s|%HORIZON|${horizon}|" "${srcfile}" > "${workfile}"
+  sed "${sedargs[@]}" -e "s|%LAT|${1}|;s|%LON|${2}|;s|%DECLINATION|${3}|;s|%AZIMUTH|${4}|;s|%KWP|${5}|;s|%HORIZON|${horizon}|" "${srcfile}" > "${workfile}"
   if [[ -f ${destfile} ]] && cmp -s "${workfile}" "${destfile}"; then
     rm -f "${workfile}"	# unchanged: do not touch, else openHAB reloads the thing (and fetches forecast.solar again)
     echo "unchanged"
