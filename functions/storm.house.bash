@@ -595,6 +595,62 @@ setup_hp_config() {
 }
 
 
+## Generate/copy openHAB config for the indoor temperature/presence sensor (#570)
+##
+## Valid Arguments:
+##
+## #1 sensor type: keine, custom or a template in STORE/innentemp (shellyht, shellyplusht, shellymotion, shellyplus1-addon, shellyuni)
+## #2 IP address of the sensor
+## #3 sensor auth user (if applicable)
+## #4 sensor auth password (if applicable)
+##
+## things/items innentemperatur.* are created from {things,items}/STORE/innentemp/<type>.{things,items} (custom: without own file the
+## supplied *-template), keine removes them. The items file links InnentemperaturShelly (group Innentemperaturen) and for motion sensors
+## RaumbenutzungShelly (group Raumbenutzung).
+##
+##    setup_indoortemp_config()
+##
+setup_indoortemp_config() {
+  local conf="${OPENHAB_CONF:-/etc/openhab}"
+  local typ="${1:-${indoortemptype:-keine}}"
+  local cuser
+  local cpass
+  local srcfile
+  local destfile
+  local tmpfile
+
+  cuser=${3:-${indoortempuser}}
+  if [[ $cuser == "NULL" ]]; then cuser=""; fi
+  cpass=${4:-${indoortemppass}}
+  if [[ $cpass == "NULL" ]]; then cpass=""; fi
+
+  # things vor items, damit die Kanäle beim Verlinken schon existieren; nur bei geändertem Inhalt in einem Schritt ersetzen (siehe setup_hp_config)
+  for component in things items; do
+    destfile="${conf}/${component}/innentemperatur.${component}"
+    tmpfile="${conf}/${component}/.innentemperatur.${component}.new"
+    srcfile="${conf}/${component}/STORE/innentemp/${typ}.${component}"
+    if ! [[ -f $srcfile ]] && [[ $typ == "custom" ]]; then
+      srcfile="${srcfile}-template"
+    fi
+    if [[ $typ == "keine" ]] || [[ $typ == "NULL" ]] || ! [[ -f $srcfile ]]; then
+      rm -f "$destfile"
+      continue
+    fi
+    if ! cp -p "$srcfile" "$tmpfile"; then return 1; fi
+    sed -i "s|%IP|${2:-${indoortempip}}|;s|%USER|${cuser}|;s|%PASS|${cpass}|" "$tmpfile"
+    if cmp -s "$tmpfile" "$destfile"; then
+      rm -f "$tmpfile"
+      continue
+    fi
+    if [[ $(whoami) == "root" ]]; then
+      chown "${username:-openhabian}:openhab" "$tmpfile"
+      chmod 664 "$tmpfile"
+    fi
+    mv -f "$tmpfile" "$destfile"
+  done
+  return 0
+}
+
 ####### TODO TODO ####### TODO TODO ####### TODO TODO ####### TODO TODO #########
 
 ## setup OH config for FNN limits signalling §14a EnWG, §9 EEG
