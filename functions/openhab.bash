@@ -292,9 +292,11 @@ dashboard_add_tile() {
   fi
 
   touch "$dashboardConfig"
-  if grep -qs "${application}-link" "$dashboardConfig"; then
+  # the keys carry the PID prefix (org.openhab.core.ui.tiles:), so match it to really remove an existing tile
+  # (the old pattern "^${application}-link-*$" never matched and every run appended another copy)
+  if grep -qs "^org\.openhab\.core\.ui\.tiles:${application}-link-" "$dashboardConfig"; then
     echo -n "Replacing... "
-    cond_redirect sed -i -e "/^${application}-link-*$/d" "$dashboardConfig"
+    cond_redirect sed -i -e "/^org\.openhab\.core\.ui\.tiles:${application}-link-/d" "$dashboardConfig"
   fi
 
   if [[ -z $tileDesc ]] || [[ -z $tileURL ]] || [[ -z $tileImg ]]; then
