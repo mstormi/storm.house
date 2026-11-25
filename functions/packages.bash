@@ -767,6 +767,54 @@ install_evcc() {
 
   if ! cond_redirect systemctl enable --now evcc.service; then echo "FAILED (enable evcc.service)"; return 1; fi
   cp "${BASEDIR:-/opt/openhabian}/includes/${sudoersFile}" "${sudoersPath}/"
+  install_evcc_token
+}
+
+## Install the evcc sponsor token from includes/evcctoken.zip (like tskey.zip for tailscale).
+## The zip holds a single file with the token as its only content and is encrypted with the image password
+## (userpw). On existing systems userpw has been removed from /etc/openhabian.conf by clean_config_userpw,
+## so the image password from build-image/openhabian.conf is tried next.
+## The token is written to /etc/openhabian.conf (evcctoken=) and into an existing evcc.yaml (sponsortoken:).
+## It is never printed. If the zip cannot be decrypted, the existing evcctoken stays unchanged.
+##
+##    install_evcc_token()
+##
+install_evcc_token() {
+  local tokenFile="${BASEDIR:-/opt/openhabian}/includes/evcctoken.zip"
+  local imageConf="${BASEDIR:-/opt/openhabian}/build-image/openhabian.conf"
+  local conf="${configFile:-/etc/openhabian.conf}"
+  local evccuser evccdir evccConfig imagepw pw token=""
+
+  if [[ ! -f $tokenFile ]]; then return 0; fi
+  echo -n "$(timestamp) [openHABian] Installing evcc sponsor token... "
+  imagepw="$(sed -n -e 's|^userpw=||p' "$imageConf" 2> /dev/null | head -1 | sed -e 's|^"\(.*\)"$|\1|' -e "s|^'\(.*\)'$|\1|")"
+  for pw in "${userpw}" "${imagepw}"; do
+    if [[ -z $pw ]]; then continue; fi
+    token="$(unzip -p -P "$pw" "$tokenFile" 2> /dev/null | tr -d '\r\n')"
+    if [[ -n $token ]]; then break; fi
+  done
+  if [[ ! $token =~ ^[A-Za-z0-9._-]+$ ]]; then echo "SKIPPED (cannot decrypt ${tokenFile})"; return 0; fi
+
+  if grep -q '^evcctoken=' "$conf"; then
+    sed -i -e "s|^evcctoken=.*$|evcctoken=${token}|" "$conf"
+  else
+    echo "evcctoken=${token}" >> "$conf"
+  fi
+  # shellcheck disable=SC2034
+  evcctoken="$token"
+
+  evccuser="$(systemctl show -pUser evcc | cut -d= -f2)"
+  evccdir="$(eval echo "~${evccuser:-${username:-openhabian}}")"
+  evccConfig="${evccdir}/evcc.yaml"
+  if [[ -s $evccConfig ]] && ! grep -qx "sponsortoken: ${token}" "$evccConfig"; then
+    if grep -q '^sponsortoken:' "$evccConfig"; then
+      sed -i -e "s|^sponsortoken:.*$|sponsortoken: ${token}|" "$evccConfig"
+    else      # setup_wb_config entfernt die Zeile bei Token NULL
+      printf '\nsponsortoken: %s\n' "$token" >> "$evccConfig"
+    fi
+    systemctl try-restart evcc.service &> /dev/null
+  fi
+  echo "OK"
 }
 
 
