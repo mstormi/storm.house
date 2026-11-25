@@ -373,6 +373,9 @@ setup_wb_config() {
   if [[ $token = "NULL" ]]; then
     token=${evcctoken}
   fi
+  if [[ $token == *.zip ]]; then   # evcctoken.zip konnte nicht entpackt werden (install_evcc_token)
+    token=""
+  fi
   temp="$(mktemp "${TMPDIR:-/tmp}"/evcc.XXXXX)"
   cp "${includesDir}/EVCC/evcc.yaml-template" "$temp"
 

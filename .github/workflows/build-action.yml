@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'includes/tskey.zip'
+      - 'includes/evcctoken.zip'
       - 'build.bash'
       - 'build-image/openhabian-installer.service'
       - 'build-image/first-boot.bash'
@@ -16,6 +17,7 @@ on:
   pull_request:
     paths:
       - 'includes/tskey.zip'
+      - 'includes/evcctoken.zip'
       - 'build.bash'
       - 'build-image/openhabian-installer.service'
       - 'build-image/first-boot.bash'
