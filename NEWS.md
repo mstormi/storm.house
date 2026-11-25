@@ -30,7 +30,7 @@ lädt, berücksichtigt die Planung ebenfalls.
   (Solarspitzengesetz), macht das EMS vorher Platz in der Batterie und speichert den Überschuss,
   statt ihn unvergütet einzuspeisen. Das funktioniert mit jedem Stromtarif.
 
-Basis-System aktualisiert auf openHAB 5.2.4 und evcc 0.318.1.
+Basis-System aktualisiert auf openHAB 5.2.4 und evcc 0.319.1.
 
 ## Systemanalyse mit Claude Code ## November 2026
 Neue Installationen enthalten Claude Code (Anthropic) für den Standardbenutzer. Damit können Sie

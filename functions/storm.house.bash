@@ -388,7 +388,7 @@ setup_wb_config() {
   if [[ ${6:-${wallboxid}} != "" && ${6:-${wallboxid}} != "1234567890abcdef" ]] && [[ ${1:-${wallboxtype}} == "eebus" || ${1:-${wallboxtype}} == "elliconnect" || ${1:-${wallboxtype}} == "ellipro" ]]; then
     uncomment "#SKI" "${evccConfig}"
   fi
-  # Wallbox-Templates mit Modbus/TCP (evcc 0.318.1, templates/definition/charger: modbus-Auswahl tcpip)
+  # Wallbox-Templates mit Modbus/TCP (evcc 0.318.1–0.319.1, templates/definition/charger: modbus-Auswahl tcpip)
   local modbusTcpWallboxen="abb abl-em4 alfen alpitronic ambibox amperfied amperfied-solar bender-cc bender-icc chargex compleo-duo compleo-solo dadapower delta em2go em2go-duo enovates etek foxess-evc goodwe-wallbox hesotec innogy-ebox kathrein keba-modbus keba-modbus-p40 mennekes-hcc3 neoom-n neoom-n-plus nrggen2 obo openwb-2.0 peblar phoenix-charx phoenix-em-eth phoenix-ev-eth pracht-alpha raedian schneider-evlink-v3 senec-plus senec-premium sigenergy sigenergy-evdc sungrow versicharge vestel victron victron-evcs voltie"
   if [[ " ${modbusTcpWallboxen} " == *" ${1:-${wallboxtype}} "* ]] && [[ -n ${3:-${wallboxmodbusid}} && ${3:-${wallboxmodbusid}} != "NULL" ]]; then
     uncomment "#TCPMODBUS" "${evccConfig}"
